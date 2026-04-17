@@ -5,6 +5,7 @@ const LoginPage = ({ onLogin, onRegister }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showForgot, setShowForgot] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,11 +73,22 @@ const LoginPage = ({ onLogin, onRegister }) => {
               {loading ? 'ログイン中...' : 'ログイン'}
             </button>
           </form>
-          <div className="mt-6 pt-5 border-t border-gray-100 text-center">
+          <div className="mt-6 pt-5 border-t border-gray-100 text-center space-y-2">
             <p className="text-sm text-gray-500">
               アカウントをお持ちでない方は
               <button onClick={onRegister} className="text-indigo-600 hover:text-indigo-800 font-semibold ml-1 underline underline-offset-2">新規登録</button>
             </p>
+            <button
+              onClick={() => setShowForgot(f => !f)}
+              className="text-xs text-gray-400 hover:text-gray-600 underline underline-offset-2"
+            >
+              パスワードを忘れた方へ
+            </button>
+            {showForgot && (
+              <div className="bg-amber-50 ring-1 ring-amber-200 rounded-xl px-4 py-3 text-xs text-amber-700 text-left">
+                管理者にパスワードのリセットを依頼してください。管理者がユーザー管理画面からリセットできます。
+              </div>
+            )}
           </div>
         </div>
       </div>

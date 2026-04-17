@@ -124,6 +124,17 @@ router.delete('/users/:id', requireAdmin, (req, res) => {
   res.json({ ok: true });
 });
 
+router.patch('/users/:id/password', requireAdmin, async (req, res) => {
+  const id = parseInt(req.params.id);
+  const { newPassword } = req.body;
+  if (!newPassword || newPassword.length < 6) {
+    return res.status(400).json({ error: 'パスワードは6文字以上で入力してください' });
+  }
+  const hash = await bcrypt.hash(newPassword, 10);
+  updateUserPassword(id, hash);
+  res.json({ ok: true });
+});
+
 router.patch('/users/:id/role', requireAdmin, (req, res) => {
   const id = parseInt(req.params.id);
   const { role } = req.body;

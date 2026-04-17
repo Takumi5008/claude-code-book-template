@@ -44,4 +44,6 @@ export const api = {
     request(`/api/auth/users/${id}`, { method: 'DELETE' }),
   createUser: (name, email, password) =>
     request('/api/auth/users', { method: 'POST', body: { name, email, password } }),
+  resetUserPassword: (id, newPassword) =>
+    request(`/api/auth/users/${id}/password`, { method: 'PATCH', body: { newPassword } }),
 };
