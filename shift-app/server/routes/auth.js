@@ -98,6 +98,23 @@ router.get('/users', requireAdmin, (req, res) => {
   res.json(getAllUsers());
 });
 
+router.post('/users', requireAdmin, async (req, res) => {
+  const { name, email, password } = req.body;
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: '名前・メールアドレス・パスワードを入力してください' });
+  }
+  if (password.length < 6) {
+    return res.status(400).json({ error: 'パスワードは6文字以上で入力してください' });
+  }
+  const existing = getUserByEmail(email);
+  if (existing) {
+    return res.status(400).json({ error: 'このメールアドレスはすでに登録されています' });
+  }
+  const hash = await bcrypt.hash(password, 10);
+  const user = createUser(name, email, hash, 'member');
+  res.json(user);
+});
+
 router.delete('/users/:id', requireAdmin, (req, res) => {
   const id = parseInt(req.params.id);
   if (id === req.session.userId) {

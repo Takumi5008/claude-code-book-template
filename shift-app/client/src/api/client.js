@@ -42,4 +42,6 @@ export const api = {
     request(`/api/auth/users/${id}/role`, { method: 'PATCH', body: { role } }),
   deleteUser: (id) =>
     request(`/api/auth/users/${id}`, { method: 'DELETE' }),
+  createUser: (name, email, password) =>
+    request('/api/auth/users', { method: 'POST', body: { name, email, password } }),
 };
