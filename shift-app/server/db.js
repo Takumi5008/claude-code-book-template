@@ -7,17 +7,6 @@ const db = new Database(join(__dirname, 'shifts.db'));
 
 db.pragma('journal_mode = WAL');
 
-// マイグレーション
-const cols = db.prepare('PRAGMA table_info(users)').all().map(c => c.name);
-if (!cols.includes('push_subscription')) {
-  db.exec('ALTER TABLE users ADD COLUMN push_subscription TEXT');
-}
-if (!cols.includes('last_login_at')) {
-  db.exec('ALTER TABLE users ADD COLUMN last_login_at DATETIME');
-  // 既存ユーザーはcreated_atをlast_login_atとして設定
-  db.exec('UPDATE users SET last_login_at = created_at WHERE last_login_at IS NULL');
-}
-
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,6 +37,16 @@ db.exec(`
     UNIQUE(year, month)
   );
 `);
+
+// マイグレーション（テーブル作成後に実行）
+const cols = db.prepare('PRAGMA table_info(users)').all().map(c => c.name);
+if (!cols.includes('push_subscription')) {
+  db.exec('ALTER TABLE users ADD COLUMN push_subscription TEXT');
+}
+if (!cols.includes('last_login_at')) {
+  db.exec('ALTER TABLE users ADD COLUMN last_login_at DATETIME');
+  db.exec('UPDATE users SET last_login_at = created_at WHERE last_login_at IS NULL');
+}
 
 export const updateUserName = (id, name) =>
   db.prepare('UPDATE users SET name = ? WHERE id = ?').run(name, id);
