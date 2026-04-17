@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
-import { getUserByEmail, getUserById, createUser, getAllUsers, updateUserRole, updateUserName, updateUserPassword, recordLogin, deleteUser } from '../db.js';
+import { getUserByEmail, getUserById, createUser, getAllUsers, updateUserRole, updateUserName, updateUserPassword, recordLogin, deleteUser, getUserCount } from '../db.js';
 import { requireLogin, requireAdmin } from '../middleware/auth.js';
 
 const router = Router();
@@ -42,7 +42,8 @@ router.post('/register', async (req, res) => {
   }
 
   const hash = await bcrypt.hash(password, 10);
-  const user = createUser(name, email, hash);
+  const isFirstUser = getUserCount() === 0;
+  const user = createUser(name, email, hash, isFirstUser ? 'admin' : 'member');
 
   req.session.userId = user.id;
   req.session.role = user.role;

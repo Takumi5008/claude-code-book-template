@@ -60,10 +60,13 @@ export const getAllUsers = () =>
 export const updateUserRole = (id, role) =>
   db.prepare('UPDATE users SET role = ? WHERE id = ?').run(role, id);
 
-export const createUser = (name, email, password) => {
+export const getUserCount = () =>
+  db.prepare('SELECT COUNT(*) as count FROM users').get().count;
+
+export const createUser = (name, email, password, role = 'member') => {
   const result = db.prepare(
-    "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'member')"
-  ).run(name, email, password);
+    'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)'
+  ).run(name, email, password, role);
   return db.prepare('SELECT id, name, email, role FROM users WHERE id = ?').get(result.lastInsertRowid);
 };
 
