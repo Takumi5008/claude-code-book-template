@@ -9,6 +9,9 @@ const UserList = ({ currentUserId }) => {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState('');
+  const [resetTarget, setResetTarget] = useState(null);
+  const [resetPassword, setResetPassword] = useState('');
+  const [resetMsg, setResetMsg] = useState('');
 
   const load = () => {
     setLoading(true);
@@ -59,6 +62,21 @@ const UserList = ({ currentUserId }) => {
     }
   };
 
+  const handleResetPassword = async () => {
+    if (!resetPassword || resetPassword.length < 6) {
+      setResetMsg('6文字以上で入力してください');
+      return;
+    }
+    try {
+      await api.resetUserPassword(resetTarget.id, resetPassword);
+      setResetMsg('リセットしました');
+      setResetPassword('');
+      setTimeout(() => { setResetTarget(null); setResetMsg(''); }, 1500);
+    } catch (err) {
+      setResetMsg(err.message);
+    }
+  };
+
   const inputCls = "w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent bg-gray-50 focus:bg-white transition";
 
   return (
@@ -85,6 +103,40 @@ const UserList = ({ currentUserId }) => {
           {showAdd ? 'キャンセル' : 'メンバー追加'}
         </button>
       </div>
+
+      {/* パスワードリセットモーダル */}
+      {resetTarget && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm">
+            <h4 className="text-base font-bold text-gray-800 mb-1">パスワードリセット</h4>
+            <p className="text-sm text-gray-500 mb-4">「{resetTarget.name}」の新しいパスワードを設定します</p>
+            <input
+              type="password"
+              placeholder="新しいパスワード（6文字以上）"
+              value={resetPassword}
+              onChange={(e) => { setResetPassword(e.target.value); setResetMsg(''); }}
+              className={inputCls + " mb-3"}
+            />
+            {resetMsg && (
+              <p className={`text-xs mb-3 px-3 py-2 rounded-xl ${resetMsg === 'リセットしました' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-600'}`}>{resetMsg}</p>
+            )}
+            <div className="flex gap-2">
+              <button
+                onClick={() => { setResetTarget(null); setResetPassword(''); setResetMsg(''); }}
+                className="flex-1 border-2 border-gray-200 text-gray-600 py-2 rounded-xl text-sm font-semibold hover:border-gray-300 transition"
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={handleResetPassword}
+                className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-2 rounded-xl text-sm font-semibold hover:from-amber-600 hover:to-orange-600 transition"
+              >
+                リセット
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* メンバー追加フォーム */}
       {showAdd && (
@@ -156,6 +208,13 @@ const UserList = ({ currentUserId }) => {
                       className="text-xs text-indigo-600 hover:text-white hover:bg-indigo-600 disabled:opacity-50 border border-indigo-300 px-3 py-1.5 rounded-lg transition font-medium"
                     >
                       {updating === user.id ? '...' : user.role === 'admin' ? 'メンバーに変更' : '管理者に変更'}
+                    </button>
+                    <button
+                      onClick={() => { setResetTarget(user); setResetPassword(''); setResetMsg(''); }}
+                      disabled={updating === user.id}
+                      className="text-xs text-amber-600 hover:text-white hover:bg-amber-500 disabled:opacity-50 border border-amber-300 px-3 py-1.5 rounded-lg transition font-medium"
+                    >
+                      PW変更
                     </button>
                     <button
                       onClick={() => handleDelete(user)}
