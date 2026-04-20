@@ -6,10 +6,13 @@ import UserList from '../components/UserList.jsx';
 import AccountSettings from '../components/AccountSettings.jsx';
 import AdminShiftEditor from '../components/AdminShiftEditor.jsx';
 import ShiftCalendar from '../components/ShiftCalendar.jsx';
+import MtgAttendance from '../components/MtgAttendance.jsx';
+import MtgTable from '../components/MtgTable.jsx';
 
 const tabs = [
   { id: 'myshift', label: 'シフト入力', icon: '📝' },
   { id: 'shift',   label: 'シフト一覧', icon: '📋' },
+  { id: 'mtg',     label: 'MTG出欠', icon: '🤝' },
   { id: 'users',   label: 'ユーザー管理', icon: '👥' },
   { id: 'edit',    label: 'シフト編集', icon: '✏️' },
   { id: 'account', label: 'アカウント設定', icon: '⚙️' },
@@ -102,6 +105,15 @@ const AdminPage = ({ user, onLogout }) => {
 
             <AdminTable year={year} month={month} />
           </>
+        )}
+
+        {tab === 'mtg' && (
+          <div className="space-y-6">
+            <div className="max-w-lg mx-auto">
+              <MtgAttendance />
+            </div>
+            <MtgTable />
+          </div>
         )}
 
         {tab === 'users' && <UserList currentUserId={user.id} />}

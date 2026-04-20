@@ -46,4 +46,9 @@ export const api = {
     request('/api/auth/users', { method: 'POST', body: { name, email, password } }),
   resetUserPassword: (id, newPassword) =>
     request(`/api/auth/users/${id}/password`, { method: 'PATCH', body: { newPassword } }),
+  getMtgFridays: () => request('/api/mtg/fridays'),
+  getMyMtg: () => request('/api/mtg/my'),
+  saveMyMtg: (date, status, reason) =>
+    request('/api/mtg/my', { method: 'POST', body: { date, status, reason } }),
+  getAllMtg: () => request('/api/mtg/all'),
 };

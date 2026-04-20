@@ -36,6 +36,16 @@ db.exec(`
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(year, month)
   );
+
+  CREATE TABLE IF NOT EXISTS mtg_attendance (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL REFERENCES users(id),
+    date TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    reason TEXT,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, date)
+  );
 `);
 
 // マイグレーション（テーブル作成後に実行）
@@ -135,5 +145,35 @@ export const getUnsubmittedMembers = (year, month) =>
     )
     ORDER BY u.name
   `).all(year, month);
+
+export const upsertMtgAttendance = (userId, date, status, reason) => {
+  db.prepare(`
+    INSERT INTO mtg_attendance (user_id, date, status, reason, updated_at)
+    VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+    ON CONFLICT(user_id, date) DO UPDATE SET
+      status = excluded.status,
+      reason = excluded.reason,
+      updated_at = CURRENT_TIMESTAMP
+  `).run(userId, date, status, reason || null);
+};
+
+export const getMyMtgAttendances = (userId, dates) => {
+  const placeholders = dates.map(() => '?').join(',');
+  return db.prepare(
+    `SELECT * FROM mtg_attendance WHERE user_id = ? AND date IN (${placeholders})`
+  ).all(userId, ...dates);
+};
+
+export const getAllMtgAttendances = (dates) => {
+  const placeholders = dates.map(() => '?').join(',');
+  return db.prepare(`
+    SELECT m.*, u.name FROM mtg_attendance m
+    JOIN users u ON m.user_id = u.id
+    WHERE m.date IN (${placeholders})
+  `).all(...dates);
+};
+
+export const getAllMembersForMtg = () =>
+  db.prepare('SELECT id, name FROM users WHERE last_login_at IS NOT NULL ORDER BY name').all();
 
 export default db;

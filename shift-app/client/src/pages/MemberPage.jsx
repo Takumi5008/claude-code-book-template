@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import ShiftCalendar from '../components/ShiftCalendar.jsx';
 import AccountSettings from '../components/AccountSettings.jsx';
+import MtgAttendance from '../components/MtgAttendance.jsx';
 
 const tabs = [
   { id: 'shift',   label: 'シフト入力', icon: '📝' },
+  { id: 'mtg',     label: 'MTG出欠', icon: '🤝' },
   { id: 'account', label: 'アカウント設定', icon: '⚙️' },
 ];
 
@@ -56,6 +58,7 @@ const MemberPage = ({ user, onLogout }) => {
 
       <main className="max-w-lg mx-auto px-4 py-6">
         {tab === 'shift' && <ShiftCalendar user={user} />}
+        {tab === 'mtg' && <MtgAttendance />}
         {tab === 'account' && <AccountSettings user={user} />}
       </main>
     </div>

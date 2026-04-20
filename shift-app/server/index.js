@@ -8,6 +8,7 @@ import authRouter from './routes/auth.js';
 import shiftsRouter from './routes/shifts.js';
 import deadlinesRouter from './routes/deadlines.js';
 import pushRouter from './routes/push.js';
+import mtgRouter from './routes/mtg.js';
 import { startScheduler } from './push/scheduler.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -27,6 +28,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/shifts', shiftsRouter);
 app.use('/api/deadlines', deadlinesRouter);
 app.use('/api/push', pushRouter);
+app.use('/api/mtg', mtgRouter);
 
 // フロントエンドの静的ファイルを配信
 const distPath = join(__dirname, '../client/dist');
