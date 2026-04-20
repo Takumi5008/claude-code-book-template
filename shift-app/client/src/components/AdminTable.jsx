@@ -31,6 +31,17 @@ const AdminTable = ({ year, month }) => {
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const today = new Date();
 
+  // 個人ごとの出勤日数
+  const memberTotal = (member) =>
+    days.filter(d => getWorkType(member.workDates, d)).length;
+
+  // 日ごとの出勤人数
+  const dayTotal = (d) =>
+    shifts.filter(m => getWorkType(m.workDates, d)).length;
+
+  // 全体総計
+  const grandTotal = shifts.reduce((sum, m) => sum + memberTotal(m), 0);
+
   return (
     <div className="bg-white rounded-2xl shadow-md ring-1 ring-gray-100 p-6">
       <div className="flex items-center justify-between mb-4">
@@ -54,7 +65,7 @@ const AdminTable = ({ year, month }) => {
           <table className="text-xs border-collapse w-full">
             <thead>
               <tr>
-                <th className="border border-gray-100 px-3 py-2.5 bg-gray-50 text-left min-w-24 sticky left-0 z-10 rounded-tl-lg text-gray-600 font-semibold">名前</th>
+                <th className="border border-gray-100 px-3 py-2.5 bg-gray-50 text-left min-w-24 sticky left-0 z-10 text-gray-600 font-semibold">名前</th>
                 <th className="border border-gray-100 px-2 py-2.5 bg-gray-50 text-center min-w-10 text-gray-600 font-semibold">提出</th>
                 {days.map((d) => {
                   const dow = new Date(year, month - 1, d).getDay();
@@ -72,6 +83,7 @@ const AdminTable = ({ year, month }) => {
                     </th>
                   );
                 })}
+                <th className="border border-gray-100 px-2 py-2.5 bg-indigo-50 text-center min-w-12 text-indigo-600 font-bold">計</th>
               </tr>
             </thead>
             <tbody>
@@ -94,11 +106,36 @@ const AdminTable = ({ year, month }) => {
                       </td>
                     );
                   })}
+                  <td className="border border-gray-100 px-2 py-2 text-center bg-indigo-50 font-bold text-indigo-600">
+                    {memberTotal(member)}
+                  </td>
                 </tr>
               ))}
               {shifts.length === 0 && (
                 <tr>
-                  <td colSpan={daysInMonth + 2} className="text-center text-gray-400 py-8">メンバーのシフトがありません</td>
+                  <td colSpan={daysInMonth + 3} className="text-center text-gray-400 py-8">メンバーのシフトがありません</td>
+                </tr>
+              )}
+              {/* 日ごとの総計行 */}
+              {shifts.length > 0 && (
+                <tr className="bg-indigo-50/60">
+                  <td className="border border-gray-100 px-3 py-2 font-bold text-indigo-600 sticky left-0 bg-indigo-50/60">合計</td>
+                  <td className="border border-gray-100 px-2 py-2" />
+                  {days.map((d) => {
+                    const dow = new Date(year, month - 1, d).getDay();
+                    const total = dayTotal(d);
+                    return (
+                      <td key={d} className={`border border-gray-100 px-1 py-2 text-center font-bold
+                        ${total > 0 ? 'text-indigo-600' : 'text-gray-300'}
+                        ${dow === 0 ? 'bg-rose-50/40' : ''}
+                        ${dow === 6 ? 'bg-indigo-50/40' : ''}`}>
+                        {total > 0 ? total : '·'}
+                      </td>
+                    );
+                  })}
+                  <td className="border border-gray-100 px-2 py-2 text-center bg-indigo-100 font-bold text-indigo-700 text-sm">
+                    {grandTotal}
+                  </td>
                 </tr>
               )}
             </tbody>
