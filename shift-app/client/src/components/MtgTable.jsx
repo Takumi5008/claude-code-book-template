@@ -40,7 +40,7 @@ const MtgTable = () => {
   const now = new Date();
 
   const countPresent = (date) =>
-    members.filter(m => map[m.id]?.[date]?.status === 'present').length;
+    members.filter(m => ['present', 'late'].includes(map[m.id]?.[date]?.status)).length;
 
   return (
     <div className="bg-white rounded-2xl shadow-md ring-1 ring-gray-100 p-6">
@@ -134,6 +134,16 @@ const MtgTable = () => {
                       {rec?.status === 'present' && (
                         <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 font-bold text-sm">○</span>
                       )}
+                      {rec?.status === 'late' && (
+                        <span
+                          className="inline-flex flex-col items-center justify-center rounded-lg bg-amber-100 text-amber-600 font-bold text-xs px-1 py-0.5 cursor-pointer leading-tight"
+                          onMouseEnter={() => setTooltip({ date, id: member.id, reason: [rec.late_time && `${rec.late_time}遅刻`, rec.reason].filter(Boolean).join('・') })}
+                          onMouseLeave={() => setTooltip(null)}
+                        >
+                          <span>遅</span>
+                          {rec.late_time && <span className="text-[9px]">{rec.late_time}</span>}
+                        </span>
+                      )}
                       {rec?.status === 'absent' && (
                         <span
                           className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-rose-100 text-rose-500 font-bold text-sm cursor-pointer"
@@ -142,7 +152,7 @@ const MtgTable = () => {
                         >✗</span>
                       )}
                       {!rec?.status && <span className="text-gray-200">–</span>}
-                      {tooltip?.date === date && tooltip?.id === member.id && (
+                      {tooltip?.date === date && tooltip?.id === member.id && tooltip.reason && (
                         <div className="absolute z-20 bottom-full left-1/2 -translate-x-1/2 mb-1 bg-gray-800 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
                           {tooltip.reason}
                         </div>

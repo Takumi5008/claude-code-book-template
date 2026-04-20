@@ -50,8 +50,8 @@ export const api = {
     request('/api/auth/forgot-password', { method: 'POST', body: { email } }),
   getMtgFridays: () => request('/api/mtg/fridays'),
   getMyMtg: () => request('/api/mtg/my'),
-  saveMyMtg: (date, status, reason) =>
-    request('/api/mtg/my', { method: 'POST', body: { date, status, reason } }),
+  saveMyMtg: (date, status, reason, lateTime) =>
+    request('/api/mtg/my', { method: 'POST', body: { date, status, reason, lateTime } }),
   getAllMtg: () => request('/api/mtg/all'),
   getMtgDeadlines: () => request('/api/mtg/deadlines'),
   setMtgDeadline: (date, deadlineAt) =>

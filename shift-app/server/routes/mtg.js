@@ -29,13 +29,13 @@ router.get('/my', requireLogin, async (req, res) => {
 });
 
 router.post('/my', requireLogin, async (req, res) => {
-  const { date, status, reason } = req.body;
-  if (!date || !['present', 'absent'].includes(status)) return res.status(400).json({ error: '不正なリクエストです' });
+  const { date, status, reason, lateTime } = req.body;
+  if (!date || !['present', 'absent', 'late'].includes(status)) return res.status(400).json({ error: '不正なリクエストです' });
   const deadlines = await getMtgDeadlines([date]);
   if (deadlines[0]?.deadline_at && new Date(deadlines[0].deadline_at) < new Date()) {
     return res.status(403).json({ error: '入力期限が終了しています' });
   }
-  await upsertMtgAttendance(req.session.userId, date, status, reason);
+  await upsertMtgAttendance(req.session.userId, date, status, reason, lateTime);
   res.json({ ok: true });
 });
 

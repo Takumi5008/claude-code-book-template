@@ -55,6 +55,7 @@ export const initDb = async () => {
     )
   `);
   await q(`ALTER TABLE users ADD COLUMN IF NOT EXISTS phone TEXT`);
+  await q(`ALTER TABLE mtg_attendance ADD COLUMN IF NOT EXISTS late_time TEXT`);
   await q(`ALTER TABLE users ADD COLUMN IF NOT EXISTS temp_password TEXT`);
   await q(`ALTER TABLE users ADD COLUMN IF NOT EXISTS temp_password_expires_at TIMESTAMP`);
   await q(`
@@ -216,15 +217,16 @@ export const upsertMtgDeadline = async (date, deadlineAt) => {
   `, [date, deadlineAt]);
 };
 
-export const upsertMtgAttendance = async (userId, date, status, reason) => {
+export const upsertMtgAttendance = async (userId, date, status, reason, lateTime) => {
   await q(`
-    INSERT INTO mtg_attendance (user_id, date, status, reason, updated_at)
-    VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
+    INSERT INTO mtg_attendance (user_id, date, status, reason, late_time, updated_at)
+    VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)
     ON CONFLICT (user_id, date) DO UPDATE SET
       status = EXCLUDED.status,
       reason = EXCLUDED.reason,
+      late_time = EXCLUDED.late_time,
       updated_at = CURRENT_TIMESTAMP
-  `, [userId, date, status, reason || null]);
+  `, [userId, date, status, reason || null, lateTime || null]);
 };
 
 export const getMyMtgAttendances = async (userId, dates) => {
