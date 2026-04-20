@@ -54,6 +54,16 @@ export const initDb = async () => {
       UNIQUE(user_id, date)
     )
   `);
+  await q(`
+    CREATE TABLE IF NOT EXISTS password_reset_tokens (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id),
+      token TEXT NOT NULL UNIQUE,
+      expires_at TIMESTAMP NOT NULL,
+      used BOOLEAN NOT NULL DEFAULT FALSE,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
 };
 
 export const getUserCount = async () => {
@@ -204,6 +214,26 @@ export const getAllMtgAttendances = async (dates) => {
 export const getAllMembersForMtg = async () => {
   const res = await q('SELECT id, name FROM users WHERE last_login_at IS NOT NULL ORDER BY name');
   return res.rows;
+};
+
+export const createResetToken = async (userId, token, expiresAt) => {
+  await q('DELETE FROM password_reset_tokens WHERE user_id = $1', [userId]);
+  await q(
+    'INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)',
+    [userId, token, expiresAt]
+  );
+};
+
+export const getResetToken = async (token) => {
+  const res = await q(
+    'SELECT * FROM password_reset_tokens WHERE token = $1 AND used = FALSE AND expires_at > NOW()',
+    [token]
+  );
+  return res.rows[0] || null;
+};
+
+export const markResetTokenUsed = async (token) => {
+  await q('UPDATE password_reset_tokens SET used = TRUE WHERE token = $1', [token]);
 };
 
 export default pool;

@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
-import { getUserByEmail, getUserById, createUser, getAllUsers, updateUserRole, updateUserName, updateUserPassword, recordLogin, deleteUser, getUserCount } from '../db.js';
+import crypto from 'crypto';
+import { getUserByEmail, getUserById, createUser, getAllUsers, updateUserRole, updateUserName, updateUserPassword, recordLogin, deleteUser, getUserCount, createResetToken, getResetToken, markResetTokenUsed } from '../db.js';
 import { requireLogin, requireAdmin } from '../middleware/auth.js';
+import { sendPasswordResetEmail } from '../mailer.js';
 
 const router = Router();
 
@@ -41,6 +43,37 @@ router.post('/register', async (req, res) => {
 
 router.post('/logout', (req, res) => {
   req.session.destroy(() => res.json({ ok: true }));
+});
+
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'メールアドレスを入力してください' });
+  const user = await getUserByEmail(email);
+  if (!user) return res.json({ ok: true }); // セキュリティのため存在しない場合も成功を返す
+  const token = crypto.randomBytes(32).toString('hex');
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1時間
+  await createResetToken(user.id, token, expiresAt);
+  const appUrl = process.env.APP_URL || 'http://localhost:5173';
+  const resetUrl = `${appUrl}/reset-password?token=${token}`;
+  try {
+    await sendPasswordResetEmail(email, resetUrl);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Mail send error:', err);
+    res.status(500).json({ error: 'メール送信に失敗しました。管理者にお問い合わせください。' });
+  }
+});
+
+router.post('/reset-password', async (req, res) => {
+  const { token, newPassword } = req.body;
+  if (!token || !newPassword) return res.status(400).json({ error: '不正なリクエストです' });
+  if (newPassword.length < 6) return res.status(400).json({ error: 'パスワードは6文字以上で入力してください' });
+  const record = await getResetToken(token);
+  if (!record) return res.status(400).json({ error: 'リンクが無効または期限切れです' });
+  const hash = await bcrypt.hash(newPassword, 10);
+  await updateUserPassword(record.user_id, hash);
+  await markResetTokenUsed(token);
+  res.json({ ok: true });
 });
 
 router.get('/me', async (req, res) => {

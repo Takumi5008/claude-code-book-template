@@ -1,22 +1,46 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from './hooks/useAuth.js';
 import { usePush } from './hooks/usePush.js';
 import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
+import ResetPasswordPage from './pages/ResetPasswordPage.jsx';
 import MemberPage from './pages/MemberPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
 import { api } from './api/client.js';
 
+const getResetToken = () => {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('token');
+};
+
 const App = () => {
   const { user, loading, login, logout, setUser } = useAuth();
   const [page, setPage] = useState('login');
+  const [resetToken, setResetToken] = useState(null);
   usePush(user);
+
+  useEffect(() => {
+    const token = getResetToken();
+    if (token) setResetToken(token);
+  }, []);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <p className="text-gray-400">読み込み中...</p>
       </div>
+    );
+  }
+
+  if (resetToken) {
+    return (
+      <ResetPasswordPage
+        token={resetToken}
+        onDone={() => {
+          setResetToken(null);
+          window.history.replaceState({}, '', '/');
+        }}
+      />
     );
   }
 
