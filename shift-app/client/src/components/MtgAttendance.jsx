@@ -45,12 +45,18 @@ const MtgAttendance = () => {
     }));
   };
 
-  const handleReasonBlur = async (date) => {
+  const handleReasonBlur = async (date, reason) => {
     const current = attendance[date];
     if (!current || current.status !== 'absent') return;
     setSaving(date);
     try {
-      await api.saveMyMtg(date, 'absent', current.reason || '');
+      await api.saveMyMtg(date, 'absent', reason || '');
+      setAttendance(prev => ({
+        ...prev,
+        [date]: { ...prev[date], reason },
+      }));
+      setMessage('保存しました');
+      setTimeout(() => setMessage(''), 2000);
     } finally {
       setSaving(null);
     }
@@ -117,7 +123,7 @@ const MtgAttendance = () => {
                   placeholder="欠席理由を入力（任意）"
                   value={rec.reason || ''}
                   onChange={(e) => handleReason(date, e.target.value)}
-                  onBlur={() => handleReasonBlur(date)}
+                  onBlur={(e) => handleReasonBlur(date, e.target.value)}
                   className="w-full mt-1 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-300 bg-white"
                 />
               )}
