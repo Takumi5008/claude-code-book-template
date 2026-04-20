@@ -1,6 +1,21 @@
 import { useState, useEffect } from 'react';
 import { api } from '../api/client.js';
 
+const getWorkType = (workDates, day) => {
+  if (!workDates || workDates.length === 0) return null;
+  if (typeof workDates[0] === 'number') return workDates.includes(day) ? 'full' : null;
+  const entry = workDates.find(w => w.day === day);
+  return entry ? entry.type : null;
+};
+
+const WorkCell = ({ type }) => {
+  if (!type) return <span className="text-gray-200">·</span>;
+  if (type === 'full') return <span className="text-indigo-600 font-bold text-sm">●</span>;
+  if (type === 'am')   return <span className="text-sky-500 font-bold text-xs">前</span>;
+  if (type === 'pm')   return <span className="text-amber-500 font-bold text-xs">後</span>;
+  return null;
+};
+
 const AdminTable = ({ year, month }) => {
   const [shifts, setShifts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -70,14 +85,12 @@ const AdminTable = ({ year, month }) => {
                   </td>
                   {days.map((d) => {
                     const dow = new Date(year, month - 1, d).getDay();
-                    const isWork = member.workDates.includes(d);
+                    const type = getWorkType(member.workDates, d);
                     return (
                       <td key={d} className={`border border-gray-100 px-1 py-2 text-center
                         ${dow === 0 ? 'bg-rose-50/40' : ''}
                         ${dow === 6 ? 'bg-indigo-50/40' : ''}`}>
-                        {isWork
-                          ? <span className="text-indigo-600 font-bold text-sm">○</span>
-                          : <span className="text-gray-200">·</span>}
+                        <WorkCell type={type} />
                       </td>
                     );
                   })}
