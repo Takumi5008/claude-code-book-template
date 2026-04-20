@@ -4,33 +4,26 @@ import { requireLogin, requireAdmin } from '../middleware/auth.js';
 
 const router = Router();
 
-router.get('/', requireLogin, (req, res) => {
+router.get('/', requireLogin, async (req, res) => {
   const year = parseInt(req.query.year);
   const month = parseInt(req.query.month);
-  if (!year || !month) {
-    return res.status(400).json({ error: 'year と month を指定してください' });
-  }
-  const deadline = getDeadline(year, month);
+  if (!year || !month) return res.status(400).json({ error: 'year と month を指定してください' });
+  const deadline = await getDeadline(year, month);
   res.json(deadline ? { deadlineAt: deadline.deadline_at } : { deadlineAt: null });
 });
 
-router.post('/', requireAdmin, (req, res) => {
+router.post('/', requireAdmin, async (req, res) => {
   const { year, month, deadlineAt } = req.body;
-  if (!year || !month || !deadlineAt) {
-    return res.status(400).json({ error: '不正なリクエストです' });
-  }
-  upsertDeadline(year, month, deadlineAt);
+  if (!year || !month || !deadlineAt) return res.status(400).json({ error: '不正なリクエストです' });
+  await upsertDeadline(year, month, deadlineAt);
   res.json({ ok: true });
 });
 
-router.get('/unsubmitted', requireAdmin, (req, res) => {
+router.get('/unsubmitted', requireAdmin, async (req, res) => {
   const year = parseInt(req.query.year);
   const month = parseInt(req.query.month);
-  if (!year || !month) {
-    return res.status(400).json({ error: 'year と month を指定してください' });
-  }
-  const members = getUnsubmittedMembers(year, month);
-  res.json(members);
+  if (!year || !month) return res.status(400).json({ error: 'year と month を指定してください' });
+  res.json(await getUnsubmittedMembers(year, month));
 });
 
 export default router;

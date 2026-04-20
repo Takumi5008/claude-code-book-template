@@ -4,6 +4,7 @@ import session from 'express-session';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { initDb } from './db.js';
 import authRouter from './routes/auth.js';
 import shiftsRouter from './routes/shifts.js';
 import deadlinesRouter from './routes/deadlines.js';
@@ -30,13 +31,13 @@ app.use('/api/deadlines', deadlinesRouter);
 app.use('/api/push', pushRouter);
 app.use('/api/mtg', mtgRouter);
 
-// フロントエンドの静的ファイルを配信
 const distPath = join(__dirname, '../client/dist');
 app.use(express.static(distPath));
 app.get('*', (req, res) => {
   res.sendFile(join(distPath, 'index.html'));
 });
 
+await initDb();
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   startScheduler();

@@ -1,180 +1,209 @@
-import Database from 'better-sqlite3';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import pkg from 'pg';
+const { Pool } = pkg;
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const dbPath = process.env.DATABASE_PATH || join(__dirname, 'shifts.db');
-const db = new Database(dbPath);
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
-db.pragma('journal_mode = WAL');
+const q = (text, params) => pool.query(text, params);
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL,
-    role TEXT NOT NULL DEFAULT 'member',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-
-  CREATE TABLE IF NOT EXISTS shifts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL REFERENCES users(id),
-    year INTEGER NOT NULL,
-    month INTEGER NOT NULL,
-    work_dates TEXT NOT NULL DEFAULT '[]',
-    submitted INTEGER NOT NULL DEFAULT 0,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id, year, month)
-  );
-
-  CREATE TABLE IF NOT EXISTS deadlines (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    year INTEGER NOT NULL,
-    month INTEGER NOT NULL,
-    deadline_at TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(year, month)
-  );
-
-  CREATE TABLE IF NOT EXISTS mtg_attendance (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL REFERENCES users(id),
-    date TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'pending',
-    reason TEXT,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id, date)
-  );
-`);
-
-// マイグレーション（テーブル作成後に実行）
-const cols = db.prepare('PRAGMA table_info(users)').all().map(c => c.name);
-if (!cols.includes('push_subscription')) {
-  db.exec('ALTER TABLE users ADD COLUMN push_subscription TEXT');
-}
-if (!cols.includes('last_login_at')) {
-  db.exec('ALTER TABLE users ADD COLUMN last_login_at DATETIME');
-  db.exec('UPDATE users SET last_login_at = created_at WHERE last_login_at IS NULL');
-}
-
-export const updateUserName = (id, name) =>
-  db.prepare('UPDATE users SET name = ? WHERE id = ?').run(name, id);
-
-export const updateUserPassword = (id, password) =>
-  db.prepare('UPDATE users SET password = ? WHERE id = ?').run(password, id);
-
-export const getAllUsers = () =>
-  db.prepare('SELECT id, name, email, role, created_at FROM users ORDER BY created_at').all();
-
-export const updateUserRole = (id, role) =>
-  db.prepare('UPDATE users SET role = ? WHERE id = ?').run(role, id);
-
-export const getUserCount = () =>
-  db.prepare('SELECT COUNT(*) as count FROM users').get().count;
-
-export const createUser = (name, email, password, role = 'member') => {
-  const result = db.prepare(
-    'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)'
-  ).run(name, email, password, role);
-  return db.prepare('SELECT id, name, email, role FROM users WHERE id = ?').get(result.lastInsertRowid);
+export const initDb = async () => {
+  await q(`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'member',
+      push_subscription TEXT,
+      last_login_at TIMESTAMP,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  await q(`
+    CREATE TABLE IF NOT EXISTS shifts (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id),
+      year INTEGER NOT NULL,
+      month INTEGER NOT NULL,
+      work_dates TEXT NOT NULL DEFAULT '[]',
+      submitted BOOLEAN NOT NULL DEFAULT FALSE,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, year, month)
+    )
+  `);
+  await q(`
+    CREATE TABLE IF NOT EXISTS deadlines (
+      id SERIAL PRIMARY KEY,
+      year INTEGER NOT NULL,
+      month INTEGER NOT NULL,
+      deadline_at TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(year, month)
+    )
+  `);
+  await q(`
+    CREATE TABLE IF NOT EXISTS mtg_attendance (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id),
+      date TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      reason TEXT,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, date)
+    )
+  `);
 };
 
-export const getUserByEmail = (email) =>
-  db.prepare('SELECT * FROM users WHERE email = ?').get(email);
-
-export const getUserById = (id) =>
-  db.prepare('SELECT id, name, email, role FROM users WHERE id = ?').get(id);
-
-export const recordLogin = (id) =>
-  db.prepare('UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = ?').run(id);
-
-export const deleteUser = (id) => {
-  db.prepare('DELETE FROM shifts WHERE user_id = ?').run(id);
-  db.prepare('DELETE FROM users WHERE id = ?').run(id);
+export const getUserCount = async () => {
+  const res = await q('SELECT COUNT(*) as count FROM users');
+  return parseInt(res.rows[0].count);
 };
 
-export const getAllMembers = () =>
-  db.prepare('SELECT id, name FROM users WHERE last_login_at IS NOT NULL ORDER BY name').all();
+export const createUser = async (name, email, password, role = 'member') => {
+  const res = await q(
+    'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role',
+    [name, email, password, role]
+  );
+  return res.rows[0];
+};
 
-export const getShift = (userId, year, month) =>
-  db.prepare('SELECT * FROM shifts WHERE user_id = ? AND year = ? AND month = ?').get(userId, year, month);
+export const getUserByEmail = async (email) => {
+  const res = await q('SELECT * FROM users WHERE email = $1', [email]);
+  return res.rows[0] || null;
+};
 
-export const upsertShift = (userId, year, month, workDates, submitted) => {
-  db.prepare(`
+export const getUserById = async (id) => {
+  const res = await q('SELECT id, name, email, role FROM users WHERE id = $1', [id]);
+  return res.rows[0] || null;
+};
+
+export const recordLogin = async (id) =>
+  q('UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = $1', [id]);
+
+export const getAllUsers = async () => {
+  const res = await q('SELECT id, name, email, role, created_at FROM users ORDER BY created_at');
+  return res.rows;
+};
+
+export const updateUserRole = async (id, role) =>
+  q('UPDATE users SET role = $1 WHERE id = $2', [role, id]);
+
+export const updateUserName = async (id, name) =>
+  q('UPDATE users SET name = $1 WHERE id = $2', [name, id]);
+
+export const updateUserPassword = async (id, password) =>
+  q('UPDATE users SET password = $1 WHERE id = $2', [password, id]);
+
+export const deleteUser = async (id) => {
+  await q('DELETE FROM mtg_attendance WHERE user_id = $1', [id]);
+  await q('DELETE FROM shifts WHERE user_id = $1', [id]);
+  await q('DELETE FROM users WHERE id = $1', [id]);
+};
+
+export const getAllMembers = async () => {
+  const res = await q('SELECT id, name FROM users WHERE last_login_at IS NOT NULL ORDER BY name');
+  return res.rows;
+};
+
+export const getShift = async (userId, year, month) => {
+  const res = await q(
+    'SELECT * FROM shifts WHERE user_id = $1 AND year = $2 AND month = $3',
+    [userId, year, month]
+  );
+  return res.rows[0] || null;
+};
+
+export const upsertShift = async (userId, year, month, workDates, submitted) => {
+  await q(`
     INSERT INTO shifts (user_id, year, month, work_dates, submitted, updated_at)
-    VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-    ON CONFLICT(user_id, year, month) DO UPDATE SET
-      work_dates = excluded.work_dates,
-      submitted = excluded.submitted,
+    VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)
+    ON CONFLICT (user_id, year, month) DO UPDATE SET
+      work_dates = EXCLUDED.work_dates,
+      submitted = EXCLUDED.submitted,
       updated_at = CURRENT_TIMESTAMP
-  `).run(userId, year, month, JSON.stringify(workDates), submitted ? 1 : 0);
+  `, [userId, year, month, JSON.stringify(workDates), submitted]);
 };
 
-export const getAllShifts = (year, month) =>
-  db.prepare(`
+export const getAllShifts = async (year, month) => {
+  const res = await q(`
     SELECT s.*, u.name FROM shifts s
     JOIN users u ON s.user_id = u.id
-    WHERE s.year = ? AND s.month = ?
-  `).all(year, month);
-
-export const savePushSubscription = (userId, subscription) =>
-  db.prepare('UPDATE users SET push_subscription = ? WHERE id = ?')
-    .run(subscription ? JSON.stringify(subscription) : null, userId);
-
-export const getMembersWithSubscription = () =>
-  db.prepare("SELECT id, name, push_subscription FROM users WHERE role = 'member' AND push_subscription IS NOT NULL").all();
-
-export const getDeadline = (year, month) =>
-  db.prepare('SELECT * FROM deadlines WHERE year = ? AND month = ?').get(year, month);
-
-export const upsertDeadline = (year, month, deadlineAt) => {
-  db.prepare(`
-    INSERT INTO deadlines (year, month, deadline_at)
-    VALUES (?, ?, ?)
-    ON CONFLICT(year, month) DO UPDATE SET deadline_at = excluded.deadline_at
-  `).run(year, month, deadlineAt);
+    WHERE s.year = $1 AND s.month = $2
+  `, [year, month]);
+  return res.rows;
 };
 
-export const getUnsubmittedMembers = (year, month) =>
-  db.prepare(`
+export const savePushSubscription = async (userId, subscription) =>
+  q('UPDATE users SET push_subscription = $1 WHERE id = $2',
+    [subscription ? JSON.stringify(subscription) : null, userId]);
+
+export const getMembersWithSubscription = async () => {
+  const res = await q(
+    "SELECT id, name, push_subscription FROM users WHERE role = 'member' AND push_subscription IS NOT NULL"
+  );
+  return res.rows;
+};
+
+export const getDeadline = async (year, month) => {
+  const res = await q('SELECT * FROM deadlines WHERE year = $1 AND month = $2', [year, month]);
+  return res.rows[0] || null;
+};
+
+export const upsertDeadline = async (year, month, deadlineAt) => {
+  await q(`
+    INSERT INTO deadlines (year, month, deadline_at)
+    VALUES ($1, $2, $3)
+    ON CONFLICT (year, month) DO UPDATE SET deadline_at = EXCLUDED.deadline_at
+  `, [year, month, deadlineAt]);
+};
+
+export const getUnsubmittedMembers = async (year, month) => {
+  const res = await q(`
     SELECT u.id, u.name FROM users u
     WHERE u.last_login_at IS NOT NULL
     AND u.id NOT IN (
-      SELECT user_id FROM shifts WHERE year = ? AND month = ? AND submitted = 1
+      SELECT user_id FROM shifts WHERE year = $1 AND month = $2 AND submitted = TRUE
     )
     ORDER BY u.name
-  `).all(year, month);
+  `, [year, month]);
+  return res.rows;
+};
 
-export const upsertMtgAttendance = (userId, date, status, reason) => {
-  db.prepare(`
+export const upsertMtgAttendance = async (userId, date, status, reason) => {
+  await q(`
     INSERT INTO mtg_attendance (user_id, date, status, reason, updated_at)
-    VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
-    ON CONFLICT(user_id, date) DO UPDATE SET
-      status = excluded.status,
-      reason = excluded.reason,
+    VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
+    ON CONFLICT (user_id, date) DO UPDATE SET
+      status = EXCLUDED.status,
+      reason = EXCLUDED.reason,
       updated_at = CURRENT_TIMESTAMP
-  `).run(userId, date, status, reason || null);
+  `, [userId, date, status, reason || null]);
 };
 
-export const getMyMtgAttendances = (userId, dates) => {
-  const placeholders = dates.map(() => '?').join(',');
-  return db.prepare(
-    `SELECT * FROM mtg_attendance WHERE user_id = ? AND date IN (${placeholders})`
-  ).all(userId, ...dates);
+export const getMyMtgAttendances = async (userId, dates) => {
+  const placeholders = dates.map((_, i) => `$${i + 2}`).join(',');
+  const res = await q(
+    `SELECT * FROM mtg_attendance WHERE user_id = $1 AND date IN (${placeholders})`,
+    [userId, ...dates]
+  );
+  return res.rows;
 };
 
-export const getAllMtgAttendances = (dates) => {
-  const placeholders = dates.map(() => '?').join(',');
-  return db.prepare(`
+export const getAllMtgAttendances = async (dates) => {
+  const placeholders = dates.map((_, i) => `$${i + 1}`).join(',');
+  const res = await q(`
     SELECT m.*, u.name FROM mtg_attendance m
     JOIN users u ON m.user_id = u.id
     WHERE m.date IN (${placeholders})
-  `).all(...dates);
+  `, dates);
+  return res.rows;
 };
 
-export const getAllMembersForMtg = () =>
-  db.prepare('SELECT id, name FROM users WHERE last_login_at IS NOT NULL ORDER BY name').all();
+export const getAllMembersForMtg = async () => {
+  const res = await q('SELECT id, name FROM users WHERE last_login_at IS NOT NULL ORDER BY name');
+  return res.rows;
+};
 
-export default db;
+export default pool;
