@@ -25,6 +25,7 @@ app.use(session({
   cookie: { httpOnly: true, sameSite: 'lax' },
 }));
 
+app.get('/api/health', (req, res) => res.json({ ok: true }));
 app.use('/api/auth', authRouter);
 app.use('/api/shifts', shiftsRouter);
 app.use('/api/deadlines', deadlinesRouter);

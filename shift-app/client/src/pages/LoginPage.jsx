@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { api } from '../api/client.js';
 
 const LoginPage = ({ onLogin, onRegister }) => {
@@ -13,6 +13,25 @@ const LoginPage = ({ onLogin, onRegister }) => {
   const [forgotError, setForgotError] = useState('');
   const [forgotLoading, setForgotLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [serverReady, setServerReady] = useState(false);
+  const warmingRef = useRef(false);
+
+  useEffect(() => {
+    if (warmingRef.current) return;
+    warmingRef.current = true;
+    const ping = async () => {
+      while (true) {
+        try {
+          await fetch('/api/health');
+          setServerReady(true);
+          return;
+        } catch {
+          await new Promise(r => setTimeout(r, 2000));
+        }
+      }
+    };
+    ping();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -180,12 +199,21 @@ const LoginPage = ({ onLogin, onRegister }) => {
                 {error}
               </div>
             )}
+            {!serverReady && (
+              <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 rounded-xl px-4 py-2.5 ring-1 ring-amber-200">
+                <svg className="animate-spin w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                </svg>
+                サーバー起動中... 完了後すぐログインできます
+              </div>
+            )}
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !serverReady}
               className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-3 rounded-xl font-semibold hover:from-indigo-700 hover:to-violet-700 disabled:opacity-50 transition shadow-md shadow-indigo-200 text-sm"
             >
-              {loading ? 'ログイン中...' : 'ログイン'}
+              {loading ? 'ログイン中...' : serverReady ? 'ログイン' : '起動待ち...'}
             </button>
           </form>
           <div className="mt-6 pt-5 border-t border-gray-100 text-center space-y-2">
