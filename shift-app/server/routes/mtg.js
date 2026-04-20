@@ -53,6 +53,14 @@ router.post('/deadline', requireAdmin, async (req, res) => {
   res.json({ ok: true });
 });
 
+router.post('/admin/:userId', requireAdmin, async (req, res) => {
+  const userId = parseInt(req.params.userId);
+  const { date, status, reason, lateTime } = req.body;
+  if (!date || !['present', 'absent', 'late'].includes(status)) return res.status(400).json({ error: '不正なリクエストです' });
+  await upsertMtgAttendance(userId, date, status, reason, lateTime);
+  res.json({ ok: true });
+});
+
 router.get('/all', requireAdmin, async (req, res) => {
   const dates = getFridays(8);
   const members = await getAllMembersForMtg();
