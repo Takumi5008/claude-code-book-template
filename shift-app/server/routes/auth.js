@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
-import { getUserByEmail, getUserById, createUser, getAllUsers, updateUserRole, updateUserName, updateUserPassword, recordLogin, deleteUser, getUserCount, createResetToken, getResetToken, markResetTokenUsed, updateUserPhone } from '../db.js';
+import { getUserByEmail, getUserById, createUser, getAllUsers, updateUserRole, updateUserName, updateUserPassword, recordLogin, deleteUser, getUserCount, updateUserPhone, setTempPassword, clearTempPassword } from '../db.js';
 import { requireLogin, requireAdmin } from '../middleware/auth.js';
-import { sendOtp } from '../mailer.js';
 
 const router = Router();
 
@@ -13,12 +12,18 @@ router.post('/login', async (req, res) => {
   }
   const user = await getUserByEmail(email);
   if (!user) return res.status(401).json({ error: 'メールアドレスまたはパスワードが正しくありません' });
-  const valid = await bcrypt.compare(password, user.password);
-  if (!valid) return res.status(401).json({ error: 'メールアドレスまたはパスワードが正しくありません' });
+  const validPassword = await bcrypt.compare(password, user.password);
+  const validTemp =
+    user.temp_password &&
+    user.temp_password === password &&
+    user.temp_password_expires_at &&
+    new Date(user.temp_password_expires_at) > new Date();
+  if (!validPassword && !validTemp) return res.status(401).json({ error: 'メールアドレスまたはパスワードが正しくありません' });
   req.session.userId = user.id;
   req.session.role = user.role;
   await recordLogin(user.id);
-  res.json({ id: user.id, name: user.name, email: user.email, role: user.role });
+  const requirePasswordChange = validTemp && !validPassword;
+  res.json({ id: user.id, name: user.name, email: user.email, role: user.role, requirePasswordChange });
 });
 
 router.post('/register', async (req, res) => {
@@ -48,29 +53,12 @@ router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: 'メールアドレスを入力してください' });
   const user = await getUserByEmail(email);
-  if (!user || !user.phone) return res.status(400).json({ error: 'このメールアドレスに紐づく電話番号が登録されていません' });
-  const otp = String(Math.floor(100000 + Math.random() * 900000)); // 6桁
-  const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10分
-  await createResetToken(user.id, otp, expiresAt);
-  try {
-    await sendOtp(user.phone, otp);
-    res.json({ ok: true });
-  } catch (err) {
-    console.error('SMS send error:', err);
-    res.status(500).json({ error: 'SMS送信に失敗しました。管理者にお問い合わせください。' });
-  }
-});
-
-router.post('/reset-password', async (req, res) => {
-  const { otp, newPassword } = req.body;
-  if (!otp || !newPassword) return res.status(400).json({ error: '不正なリクエストです' });
-  if (newPassword.length < 6) return res.status(400).json({ error: 'パスワードは6文字以上で入力してください' });
-  const record = await getResetToken(otp);
-  if (!record) return res.status(400).json({ error: 'コードが無効または期限切れです' });
-  const hash = await bcrypt.hash(newPassword, 10);
-  await updateUserPassword(record.user_id, hash);
-  await markResetTokenUsed(otp);
-  res.json({ ok: true });
+  if (!user) return res.status(404).json({ error: 'このメールアドレスは登録されていません' });
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  const tempPassword = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1時間
+  await setTempPassword(user.id, tempPassword, expiresAt);
+  res.json({ tempPassword });
 });
 
 router.get('/me', async (req, res) => {

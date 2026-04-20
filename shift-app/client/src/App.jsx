@@ -24,8 +24,8 @@ const App = () => {
     if (page === 'register') {
       return (
         <RegisterPage
-          onRegister={async (name, email, password, phone) => {
-            const u = await api.register(name, email, password, phone);
+          onRegister={async (name, email, password) => {
+            const u = await api.register(name, email, password);
             setUser(u);
           }}
           onBack={() => setPage('login')}

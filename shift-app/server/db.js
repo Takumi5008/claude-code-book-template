@@ -55,6 +55,8 @@ export const initDb = async () => {
     )
   `);
   await q(`ALTER TABLE users ADD COLUMN IF NOT EXISTS phone TEXT`);
+  await q(`ALTER TABLE users ADD COLUMN IF NOT EXISTS temp_password TEXT`);
+  await q(`ALTER TABLE users ADD COLUMN IF NOT EXISTS temp_password_expires_at TIMESTAMP`);
   await q(`
     CREATE TABLE IF NOT EXISTS password_reset_tokens (
       id SERIAL PRIMARY KEY,
@@ -82,6 +84,12 @@ export const createUser = async (name, email, password, role = 'member', phone =
 
 export const updateUserPhone = async (id, phone) =>
   q('UPDATE users SET phone = $1 WHERE id = $2', [phone, id]);
+
+export const setTempPassword = async (id, tempPassword, expiresAt) =>
+  q('UPDATE users SET temp_password = $1, temp_password_expires_at = $2 WHERE id = $3', [tempPassword, expiresAt, id]);
+
+export const clearTempPassword = async (id) =>
+  q('UPDATE users SET temp_password = NULL, temp_password_expires_at = NULL WHERE id = $1', [id]);
 
 export const getUserByEmail = async (email) => {
   const res = await q('SELECT * FROM users WHERE email = $1', [email]);

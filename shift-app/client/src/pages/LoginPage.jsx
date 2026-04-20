@@ -6,15 +6,13 @@ const LoginPage = ({ onLogin, onRegister }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  // 'login' | 'forgot-email' | 'forgot-otp'
+  // 'login' | 'forgot' | 'forgot-result'
   const [view, setView] = useState('login');
   const [forgotEmail, setForgotEmail] = useState('');
-  const [otp, setOtp] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [tempPassword, setTempPassword] = useState('');
   const [forgotError, setForgotError] = useState('');
   const [forgotLoading, setForgotLoading] = useState(false);
-  const [resetDone, setResetDone] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,13 +27,14 @@ const LoginPage = ({ onLogin, onRegister }) => {
     }
   };
 
-  const handleSendOtp = async (e) => {
+  const handleForgot = async (e) => {
     e.preventDefault();
     setForgotError('');
     setForgotLoading(true);
     try {
-      await api.forgotPassword(forgotEmail);
-      setView('forgot-otp');
+      const data = await api.forgotPassword(forgotEmail);
+      setTempPassword(data.tempPassword);
+      setView('forgot-result');
     } catch (err) {
       setForgotError(err.message);
     } finally {
@@ -43,19 +42,10 @@ const LoginPage = ({ onLogin, onRegister }) => {
     }
   };
 
-  const handleResetPassword = async (e) => {
-    e.preventDefault();
-    setForgotError('');
-    if (newPassword !== confirmPassword) return setForgotError('パスワードが一致しません');
-    setForgotLoading(true);
-    try {
-      await api.resetPassword(otp, newPassword);
-      setResetDone(true);
-    } catch (err) {
-      setForgotError(err.message);
-    } finally {
-      setForgotLoading(false);
-    }
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(tempPassword);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const header = (
@@ -69,15 +59,17 @@ const LoginPage = ({ onLogin, onRegister }) => {
     </div>
   );
 
-  if (view === 'forgot-email') {
+  if (view === 'forgot') {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-sm">
           {header}
           <div className="bg-white rounded-2xl shadow-xl p-8 ring-1 ring-gray-100">
-            <h2 className="text-lg font-bold text-gray-800 mb-1">パスワードをリセット</h2>
-            <p className="text-sm text-gray-500 mb-5">登録済みのメールアドレスを入力してください。登録された電話番号にSMSでコードを送ります。</p>
-            <form onSubmit={handleSendOtp} className="space-y-4">
+            <h2 className="text-lg font-bold text-gray-800 mb-1">パスワードをお忘れの方</h2>
+            <p className="text-sm text-gray-500 mb-5">
+              登録済みのメールアドレスを入力すると、仮パスワードが発行されます。仮パスワードの有効期限は<span className="font-medium">1時間</span>です。
+            </p>
+            <form onSubmit={handleForgot} className="space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">メールアドレス</label>
                 <input
@@ -97,7 +89,7 @@ const LoginPage = ({ onLogin, onRegister }) => {
                 disabled={forgotLoading}
                 className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-3 rounded-xl font-semibold hover:from-indigo-700 hover:to-violet-700 disabled:opacity-50 transition shadow-md shadow-indigo-200 text-sm"
               >
-                {forgotLoading ? '送信中...' : 'SMSコードを送信'}
+                {forgotLoading ? '発行中...' : '仮パスワードを発行する'}
               </button>
             </form>
             <div className="mt-5 text-center">
@@ -111,86 +103,41 @@ const LoginPage = ({ onLogin, onRegister }) => {
     );
   }
 
-  if (view === 'forgot-otp') {
+  if (view === 'forgot-result') {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-sm">
           {header}
-          <div className="bg-white rounded-2xl shadow-xl p-8 ring-1 ring-gray-100">
-            {resetDone ? (
-              <div className="text-center space-y-4">
-                <div className="bg-emerald-50 ring-1 ring-emerald-200 rounded-xl px-4 py-4 text-sm text-emerald-700">
-                  <p className="font-semibold mb-1">パスワードを変更しました</p>
-                  <p>新しいパスワードでログインしてください。</p>
-                </div>
+          <div className="bg-white rounded-2xl shadow-xl p-8 ring-1 ring-gray-100 space-y-5">
+            <div className="flex items-center justify-center w-12 h-12 bg-emerald-100 rounded-full mx-auto">
+              <svg className="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+              </svg>
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-medium text-gray-700 mb-1">仮パスワードが発行されました</p>
+              <p className="text-xs text-gray-400">有効期限: 1時間</p>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-4 ring-1 ring-gray-200">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-2xl font-mono font-bold tracking-widest text-gray-900">{tempPassword}</span>
                 <button
-                  onClick={() => { setView('login'); setResetDone(false); setOtp(''); setNewPassword(''); setConfirmPassword(''); }}
-                  className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-3 rounded-xl font-semibold hover:from-indigo-700 hover:to-violet-700 transition shadow-md shadow-indigo-200 text-sm"
+                  onClick={handleCopy}
+                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-300 hover:bg-gray-100 transition shrink-0"
                 >
-                  ログイン画面へ
+                  {copied ? 'コピー済み ✓' : 'コピー'}
                 </button>
               </div>
-            ) : (
-              <>
-                <h2 className="text-lg font-bold text-gray-800 mb-1">認証コードを入力</h2>
-                <p className="text-sm text-gray-500 mb-5">SMSに届いた6桁のコードと新しいパスワードを入力してください。</p>
-                <form onSubmit={handleResetPassword} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">SMSコード（6桁）</label>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition bg-gray-50 focus:bg-white tracking-widest text-center text-lg"
-                      placeholder="123456"
-                      maxLength={6}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">新しいパスワード</label>
-                    <input
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition bg-gray-50 focus:bg-white"
-                      placeholder="6文字以上"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">パスワード（確認）</label>
-                    <input
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition bg-gray-50 focus:bg-white"
-                      placeholder="もう一度入力"
-                      required
-                    />
-                  </div>
-                  {forgotError && (
-                    <div className="bg-rose-50 text-rose-600 text-sm rounded-xl px-4 py-2.5 ring-1 ring-rose-200">{forgotError}</div>
-                  )}
-                  <button
-                    type="submit"
-                    disabled={forgotLoading}
-                    className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-3 rounded-xl font-semibold hover:from-indigo-700 hover:to-violet-700 disabled:opacity-50 transition shadow-md shadow-indigo-200 text-sm"
-                  >
-                    {forgotLoading ? '更新中...' : 'パスワードを変更する'}
-                  </button>
-                </form>
-                <div className="mt-5 text-center space-y-2">
-                  <button onClick={() => setView('forgot-email')} className="text-xs text-gray-400 hover:text-gray-600 underline underline-offset-2 block w-full">
-                    コードを再送する
-                  </button>
-                  <button onClick={() => setView('login')} className="text-sm text-indigo-600 hover:text-indigo-800 underline underline-offset-2">
-                    ログインに戻る
-                  </button>
-                </div>
-              </>
-            )}
+            </div>
+            <div className="bg-amber-50 ring-1 ring-amber-200 rounded-xl px-4 py-3">
+              <p className="text-xs text-amber-700">この仮パスワードでログイン後、すぐにパスワードを変更してください。</p>
+            </div>
+            <button
+              onClick={() => setView('login')}
+              className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-3 rounded-xl font-semibold hover:from-indigo-700 hover:to-violet-700 transition shadow-md shadow-indigo-200 text-sm"
+            >
+              ログイン画面へ
+            </button>
           </div>
         </div>
       </div>
@@ -247,7 +194,7 @@ const LoginPage = ({ onLogin, onRegister }) => {
               <button onClick={onRegister} className="text-indigo-600 hover:text-indigo-800 font-semibold ml-1 underline underline-offset-2">新規登録</button>
             </p>
             <button
-              onClick={() => setView('forgot-email')}
+              onClick={() => setView('forgot')}
               className="text-xs text-gray-400 hover:text-indigo-600 underline underline-offset-2 transition"
             >
               パスワードを忘れた方へ
