@@ -1,0 +1,19 @@
+- generic [ref=e17]:
+  - generic [ref=e18]:
+    - generic [ref=e19]:
+      - heading "シフト管理" [level=1] [ref=e20]
+      - paragraph [ref=e21]: 管理者（管理者）
+    - button "ログアウト" [ref=e22] [cursor=pointer]
+  - generic [ref=e23]:
+    - button "シフト一覧" [ref=e24] [cursor=pointer]
+    - button "ユーザー管理" [ref=e25] [cursor=pointer]
+    - button "シフト編集" [active] [ref=e26] [cursor=pointer]
+    - button "アカウント設定" [ref=e27] [cursor=pointer]
+  - generic [ref=e225]:
+    - heading "メンバーのシフトを編集" [level=3] [ref=e226]
+    - combobox [ref=e227]:
+      - option "メンバーを選択してください" [selected]
+      - option "佐藤花子"
+      - option "山田次郎"
+      - option "田中太郎"
+      - option "鈴木一郎"

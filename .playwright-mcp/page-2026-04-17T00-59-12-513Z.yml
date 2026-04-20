@@ -1,0 +1,25 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - heading "HKR管理" [level=1] [ref=e5]
+      - paragraph [ref=e6]: 新規メンバー登録
+    - generic [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e10]: 名前
+        - textbox "山田 太郎" [ref=e11]
+      - generic [ref=e12]:
+        - generic [ref=e13]: メールアドレス
+        - textbox "your@email.com" [ref=e14]
+      - generic [ref=e15]:
+        - generic [ref=e16]: パスワード
+        - textbox "6文字以上" [ref=e17]
+      - generic [ref=e18]:
+        - generic [ref=e19]: パスワード（確認）
+        - textbox "もう一度入力" [ref=e20]
+      - button "アカウントを作成する" [ref=e21]
+    - link "ログインページへ戻る" [ref=e23] [cursor=pointer]:
+      - /url: /login
+      - img [ref=e24]
+      - text: ログインページへ戻る
+  - button "Open Next.js Dev Tools" [ref=e31] [cursor=pointer]:
+    - img [ref=e32]

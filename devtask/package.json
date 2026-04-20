@@ -1,0 +1,26 @@
+{
+  "name": "devtask",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "devtask": "./bin/devtask.js"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "better-sqlite3": "^12.9.0",
+    "chalk": "^5.6.2",
+    "commander": "^14.0.3",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.4"
+  }
+}

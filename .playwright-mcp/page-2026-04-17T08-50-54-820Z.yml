@@ -1,0 +1,52 @@
+- generic [ref=e4]:
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - heading "シフト管理" [level=1] [ref=e7]
+      - paragraph [ref=e8]: 管理者（管理者）
+    - button "ログアウト" [ref=e9] [cursor=pointer]
+  - generic [ref=e10]:
+    - button "シフト一覧" [ref=e11] [cursor=pointer]
+    - button "ユーザー管理" [active] [ref=e12] [cursor=pointer]
+  - generic [ref=e242]:
+    - heading "ユーザー管理" [level=3] [ref=e243]
+    - generic [ref=e244]:
+      - generic [ref=e245]:
+        - generic [ref=e246]:
+          - paragraph [ref=e247]: 管理者
+          - paragraph [ref=e248]: admin@example.com
+        - generic [ref=e250]: 管理者
+      - generic [ref=e251]:
+        - generic [ref=e252]:
+          - paragraph [ref=e253]: 田中太郎
+          - paragraph [ref=e254]: tanaka@example.com
+        - generic [ref=e255]:
+          - generic [ref=e256]: メンバー
+          - button "管理者に変更" [ref=e257] [cursor=pointer]
+      - generic [ref=e258]:
+        - generic [ref=e259]:
+          - paragraph [ref=e260]: 佐藤花子
+          - paragraph [ref=e261]: sato@example.com
+        - generic [ref=e262]:
+          - generic [ref=e263]: メンバー
+          - button "管理者に変更" [ref=e264] [cursor=pointer]
+      - generic [ref=e265]:
+        - generic [ref=e266]:
+          - paragraph [ref=e267]: 鈴木一郎
+          - paragraph [ref=e268]: suzuki@example.com
+        - generic [ref=e269]:
+          - generic [ref=e270]: メンバー
+          - button "管理者に変更" [ref=e271] [cursor=pointer]
+      - generic [ref=e272]:
+        - generic [ref=e273]:
+          - paragraph [ref=e274]: 山田次郎
+          - paragraph [ref=e275]: yamada@example.com
+        - generic [ref=e276]:
+          - generic [ref=e277]: メンバー
+          - button "管理者に変更" [ref=e278] [cursor=pointer]
+      - generic [ref=e279]:
+        - generic [ref=e280]:
+          - paragraph [ref=e281]: 小守谷拓実
+          - paragraph [ref=e282]: komotaku0508@gmail.com
+        - generic [ref=e283]:
+          - generic [ref=e284]: メンバー
+          - button "管理者に変更" [ref=e285] [cursor=pointer]

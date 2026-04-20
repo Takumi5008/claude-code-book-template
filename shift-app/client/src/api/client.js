@@ -11,8 +11,8 @@ const request = async (path, options = {}) => {
 };
 
 export const api = {
-  register: (name, email, password) =>
-    request('/api/auth/register', { method: 'POST', body: { name, email, password } }),
+  register: (name, email, password, phone) =>
+    request('/api/auth/register', { method: 'POST', body: { name, email, password, phone } }),
   login: (email, password) =>
     request('/api/auth/login', { method: 'POST', body: { email, password } }),
   logout: () => request('/api/auth/logout', { method: 'POST' }),
@@ -48,8 +48,8 @@ export const api = {
     request(`/api/auth/users/${id}/password`, { method: 'PATCH', body: { newPassword } }),
   forgotPassword: (email) =>
     request('/api/auth/forgot-password', { method: 'POST', body: { email } }),
-  resetPassword: (token, newPassword) =>
-    request('/api/auth/reset-password', { method: 'POST', body: { token, newPassword } }),
+  resetPassword: (otp, newPassword) =>
+    request('/api/auth/reset-password', { method: 'POST', body: { otp, newPassword } }),
   getMtgFridays: () => request('/api/mtg/fridays'),
   getMyMtg: () => request('/api/mtg/my'),
   saveMyMtg: (date, status, reason) =>

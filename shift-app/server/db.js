@@ -54,6 +54,7 @@ export const initDb = async () => {
       UNIQUE(user_id, date)
     )
   `);
+  await q(`ALTER TABLE users ADD COLUMN IF NOT EXISTS phone TEXT`);
   await q(`
     CREATE TABLE IF NOT EXISTS password_reset_tokens (
       id SERIAL PRIMARY KEY,
@@ -71,13 +72,16 @@ export const getUserCount = async () => {
   return parseInt(res.rows[0].count);
 };
 
-export const createUser = async (name, email, password, role = 'member') => {
+export const createUser = async (name, email, password, role = 'member', phone = null) => {
   const res = await q(
-    'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role',
-    [name, email, password, role]
+    'INSERT INTO users (name, email, password, role, phone) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, role',
+    [name, email, password, role, phone]
   );
   return res.rows[0];
 };
+
+export const updateUserPhone = async (id, phone) =>
+  q('UPDATE users SET phone = $1 WHERE id = $2', [phone, id]);
 
 export const getUserByEmail = async (email) => {
   const res = await q('SELECT * FROM users WHERE email = $1', [email]);

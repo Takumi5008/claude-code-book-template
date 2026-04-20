@@ -1,23 +1,11 @@
-import nodemailer from 'nodemailer';
+import twilio from 'twilio';
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS,
-  },
-});
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
-export const sendPasswordResetEmail = async (toEmail, resetUrl) => {
-  await transporter.sendMail({
-    from: `"シフト管理" <${process.env.GMAIL_USER}>`,
-    to: toEmail,
-    subject: 'パスワードリセットのご案内',
-    html: `
-      <p>パスワードリセットのリクエストを受け付けました。</p>
-      <p>以下のリンクをクリックして新しいパスワードを設定してください。</p>
-      <p><a href="${resetUrl}" style="color:#4f46e5;font-weight:bold;">パスワードをリセットする</a></p>
-      <p>このリンクは1時間有効です。リクエストした覚えがない場合は無視してください。</p>
-    `,
+export const sendOtp = async (toPhone, otp) => {
+  await client.messages.create({
+    body: `【シフト管理】パスワードリセットコード: ${otp}\n有効期限は10分です。`,
+    from: process.env.TWILIO_PHONE_NUMBER,
+    to: toPhone,
   });
 };

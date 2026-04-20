@@ -1,0 +1,93 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - generic [ref=e7]: H
+          - generic [ref=e8]: HKR管理
+        - button [ref=e9]:
+          - img [ref=e10]
+    - navigation [ref=e11]:
+      - generic [ref=e12]:
+        - link "ホーム" [ref=e13] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e14]
+          - generic [ref=e19]: ホーム
+        - link "入力" [ref=e20] [cursor=pointer]:
+          - /url: /input
+          - img [ref=e21]
+          - generic [ref=e23]: 入力
+        - link "推移" [ref=e24] [cursor=pointer]:
+          - /url: /trends
+          - img [ref=e25]
+          - generic [ref=e28]: 推移
+        - link "設定" [ref=e29] [cursor=pointer]:
+          - /url: /settings
+          - img [ref=e30]
+          - generic [ref=e33]: 設定
+    - main [ref=e34]:
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - paragraph [ref=e37]: Dashboard
+          - heading "ダッシュボード" [level=1] [ref=e38]
+          - paragraph [ref=e39]: 2026年4月の進捗状況
+        - generic [ref=e40]:
+          - generic [ref=e41]:
+            - heading "2026年4月のHKR" [level=2] [ref=e42]
+            - link "データ入力" [ref=e43] [cursor=pointer]:
+              - /url: /input
+              - img [ref=e44]
+              - text: データ入力
+          - generic [ref=e46]:
+            - generic [ref=e47]:
+              - generic [ref=e49]: So-net光
+              - paragraph [ref=e50]: 未入力
+              - generic [ref=e51]:
+                - generic [ref=e52]:
+                  - text: "解除:"
+                  - generic [ref=e53]: 0件
+                - generic [ref=e54]:
+                  - text: "開通:"
+                  - generic [ref=e55]: 0件
+            - generic [ref=e56]:
+              - generic [ref=e58]: WiMAX
+              - paragraph [ref=e59]: 未入力
+              - generic [ref=e60]:
+                - generic [ref=e61]:
+                  - text: "解除:"
+                  - generic [ref=e62]: 0件
+                - generic [ref=e63]:
+                  - text: "開通:"
+                  - generic [ref=e64]: 0件
+            - generic [ref=e65]:
+              - generic [ref=e67]: BIGLOBE光
+              - paragraph [ref=e68]: 未入力
+              - generic [ref=e69]:
+                - generic [ref=e70]:
+                  - text: "解除:"
+                  - generic [ref=e71]: 0件
+                - generic [ref=e72]:
+                  - text: "開通:"
+                  - generic [ref=e73]: 0件
+            - generic [ref=e74]:
+              - generic [ref=e76]: SB光
+              - paragraph [ref=e77]: 未入力
+              - generic [ref=e78]:
+                - generic [ref=e79]:
+                  - text: "解除:"
+                  - generic [ref=e80]: 0件
+                - generic [ref=e81]:
+                  - text: "開通:"
+                  - generic [ref=e82]: 0件
+            - generic [ref=e83]:
+              - generic [ref=e85]: SBAir
+              - paragraph [ref=e86]: 未入力
+              - generic [ref=e87]:
+                - generic [ref=e88]:
+                  - text: "解除:"
+                  - generic [ref=e89]: 0件
+                - generic [ref=e90]:
+                  - text: "開通:"
+                  - generic [ref=e91]: 0件
+  - button "Open Next.js Dev Tools" [ref=e97] [cursor=pointer]:
+    - img [ref=e98]

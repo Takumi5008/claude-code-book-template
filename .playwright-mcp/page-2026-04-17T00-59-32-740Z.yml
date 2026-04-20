@@ -1,0 +1,8 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e36]:
+    - img [ref=e37]
+    - paragraph [ref=e40]: 登録完了しました！
+    - paragraph [ref=e41]: ログインページへ移動します...
+  - button "Open Next.js Dev Tools" [ref=e31] [cursor=pointer]:
+    - img [ref=e32]
+  - alert [ref=e35]

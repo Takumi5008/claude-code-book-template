@@ -1,0 +1,13 @@
+- generic [ref=e4]:
+  - heading "シフト管理" [level=1] [ref=e5]
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - generic [ref=e8]: メールアドレス
+      - textbox [ref=e9]
+    - generic [ref=e10]:
+      - generic [ref=e11]: パスワード
+      - textbox [ref=e12]
+    - button "ログイン" [ref=e13] [cursor=pointer]
+  - paragraph [ref=e14]:
+    - text: アカウントをお持ちでない方は
+    - button "新規登録" [ref=e15] [cursor=pointer]

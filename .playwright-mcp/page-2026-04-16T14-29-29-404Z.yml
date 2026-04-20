@@ -1,0 +1,75 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e7]: H
+        - generic [ref=e8]:
+          - heading "HKR管理" [level=1] [ref=e9]
+          - paragraph [ref=e10]: 開通率トラッカー
+      - navigation [ref=e11]:
+        - link "ダッシュボード" [ref=e12] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e13]
+          - text: ダッシュボード
+        - link "データ入力" [ref=e18] [cursor=pointer]:
+          - /url: /input
+          - img [ref=e19]
+          - text: データ入力
+        - link "マイ推移" [ref=e21] [cursor=pointer]:
+          - /url: /trends
+          - img [ref=e22]
+          - text: マイ推移
+        - paragraph [ref=e26]: 管理者
+        - link "チーム全体" [ref=e27] [cursor=pointer]:
+          - /url: /team
+          - img [ref=e28]
+          - text: チーム全体
+        - link "管理" [ref=e33] [cursor=pointer]:
+          - /url: /admin
+          - img [ref=e34]
+          - text: 管理
+      - generic [ref=e37]:
+        - link "小 小守谷拓実 マネージャー" [ref=e38] [cursor=pointer]:
+          - /url: /settings
+          - generic [ref=e39]: 小
+          - generic [ref=e40]:
+            - paragraph [ref=e41]: 小守谷拓実
+            - paragraph [ref=e42]: マネージャー
+        - button "ログアウト" [ref=e43]:
+          - img [ref=e44]
+          - text: ログアウト
+    - main [ref=e47]:
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - paragraph [ref=e50]: Team
+          - heading "チーム全体" [level=1] [ref=e51]
+          - paragraph [ref=e52]: 2026年4月のHKR一覧
+        - combobox [ref=e54]:
+          - option "2026年4月" [selected]
+          - option "2026年3月"
+          - option "2026年2月"
+          - option "2026年1月"
+          - option "2025年12月"
+          - option "2025年11月"
+          - option "2025年10月"
+          - option "2025年9月"
+          - option "2025年8月"
+          - option "2025年7月"
+          - option "2025年6月"
+          - option "2025年5月"
+        - generic [ref=e56]:
+          - paragraph [ref=e57]: チーム平均（合算）
+          - paragraph [ref=e58]: "-"
+        - table [ref=e60]:
+          - rowgroup [ref=e61]:
+            - row "名前 So-net光 WiMAX 合算 状態" [ref=e62]:
+              - columnheader "名前" [ref=e63]
+              - columnheader "So-net光" [ref=e64]
+              - columnheader "WiMAX" [ref=e65]
+              - columnheader "合算" [ref=e66]
+              - columnheader "状態" [ref=e67]
+          - rowgroup [ref=e68]:
+            - row "読み込み中..." [ref=e69]:
+              - cell "読み込み中..." [ref=e70]
+  - button "Open Next.js Dev Tools" [ref=e76] [cursor=pointer]:
+    - img [ref=e77]

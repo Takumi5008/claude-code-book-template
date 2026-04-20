@@ -1,0 +1,135 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e7]: H
+        - generic [ref=e8]:
+          - heading "HKR管理" [level=1] [ref=e9]
+          - paragraph [ref=e10]: 開通率トラッカー
+      - navigation [ref=e11]:
+        - link "ダッシュボード" [ref=e12] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e13]
+          - text: ダッシュボード
+        - link "データ入力" [ref=e18] [cursor=pointer]:
+          - /url: /input
+          - img [ref=e19]
+          - text: データ入力
+        - link "マイ推移" [ref=e21] [cursor=pointer]:
+          - /url: /trends
+          - img [ref=e22]
+          - text: マイ推移
+        - paragraph [ref=e26]: 管理者
+        - link "チーム全体" [ref=e27] [cursor=pointer]:
+          - /url: /team
+          - img [ref=e28]
+          - text: チーム全体
+        - link "管理" [ref=e33] [cursor=pointer]:
+          - /url: /admin
+          - img [ref=e34]
+          - text: 管理
+      - generic [ref=e37]:
+        - link "小 小守谷拓実 マネージャー" [ref=e38] [cursor=pointer]:
+          - /url: /settings
+          - generic [ref=e39]: 小
+          - generic [ref=e40]:
+            - paragraph [ref=e41]: 小守谷拓実
+            - paragraph [ref=e42]: マネージャー
+        - button "ログアウト" [ref=e43]:
+          - img [ref=e44]
+          - text: ログアウト
+    - main [ref=e47]:
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - paragraph [ref=e50]: Trends
+          - heading "マイ推移" [level=1] [ref=e51]
+          - paragraph [ref=e52]: 過去12ヶ月のHKR推移
+        - generic [ref=e53]:
+          - button "So-net光" [ref=e54]
+          - button "WiMAX" [ref=e55]
+          - button "BIGLOBE光" [ref=e56]
+          - button "合算" [ref=e57]
+        - table [ref=e61]:
+          - rowgroup [ref=e62]:
+            - row "月 HKR 解除 開通 状態" [ref=e63]:
+              - columnheader "月" [ref=e64]
+              - columnheader "HKR" [ref=e65]
+              - columnheader "解除" [ref=e66]
+              - columnheader "開通" [ref=e67]
+              - columnheader "状態" [ref=e68]
+          - rowgroup [ref=e69]:
+            - row "2025年5月 - - - 未入力" [ref=e70]:
+              - cell "2025年5月" [ref=e71]
+              - cell "-" [ref=e72]
+              - cell "-" [ref=e73]
+              - cell "-" [ref=e74]
+              - cell "未入力" [ref=e75]
+            - row "2025年6月 - - - 未入力" [ref=e76]:
+              - cell "2025年6月" [ref=e77]
+              - cell "-" [ref=e78]
+              - cell "-" [ref=e79]
+              - cell "-" [ref=e80]
+              - cell "未入力" [ref=e81]
+            - row "2025年7月 - - - 未入力" [ref=e82]:
+              - cell "2025年7月" [ref=e83]
+              - cell "-" [ref=e84]
+              - cell "-" [ref=e85]
+              - cell "-" [ref=e86]
+              - cell "未入力" [ref=e87]
+            - row "2025年8月 - - - 未入力" [ref=e88]:
+              - cell "2025年8月" [ref=e89]
+              - cell "-" [ref=e90]
+              - cell "-" [ref=e91]
+              - cell "-" [ref=e92]
+              - cell "未入力" [ref=e93]
+            - row "2025年9月 - - - 未入力" [ref=e94]:
+              - cell "2025年9月" [ref=e95]
+              - cell "-" [ref=e96]
+              - cell "-" [ref=e97]
+              - cell "-" [ref=e98]
+              - cell "未入力" [ref=e99]
+            - row "2025年10月 - - - 未入力" [ref=e100]:
+              - cell "2025年10月" [ref=e101]
+              - cell "-" [ref=e102]
+              - cell "-" [ref=e103]
+              - cell "-" [ref=e104]
+              - cell "未入力" [ref=e105]
+            - row "2025年11月 - - - 未入力" [ref=e106]:
+              - cell "2025年11月" [ref=e107]
+              - cell "-" [ref=e108]
+              - cell "-" [ref=e109]
+              - cell "-" [ref=e110]
+              - cell "未入力" [ref=e111]
+            - row "2025年12月 - - - 未入力" [ref=e112]:
+              - cell "2025年12月" [ref=e113]
+              - cell "-" [ref=e114]
+              - cell "-" [ref=e115]
+              - cell "-" [ref=e116]
+              - cell "未入力" [ref=e117]
+            - row "2026年1月 80% 10 8 達成" [ref=e118]:
+              - cell "2026年1月" [ref=e119]
+              - cell "80%" [ref=e120]
+              - cell "10" [ref=e121]
+              - cell "8" [ref=e122]
+              - cell "達成" [ref=e123]
+            - row "2026年2月 - - - 未入力" [ref=e124]:
+              - cell "2026年2月" [ref=e125]
+              - cell "-" [ref=e126]
+              - cell "-" [ref=e127]
+              - cell "-" [ref=e128]
+              - cell "未入力" [ref=e129]
+            - row "2026年3月 - - - 未入力" [ref=e130]:
+              - cell "2026年3月" [ref=e131]
+              - cell "-" [ref=e132]
+              - cell "-" [ref=e133]
+              - cell "-" [ref=e134]
+              - cell "未入力" [ref=e135]
+            - row "2026年4月 - - - 未入力" [ref=e136]:
+              - cell "2026年4月" [ref=e137]
+              - cell "-" [ref=e138]
+              - cell "-" [ref=e139]
+              - cell "-" [ref=e140]
+              - cell "未入力" [ref=e141]
+  - button "Open Next.js Dev Tools" [ref=e147] [cursor=pointer]:
+    - img [ref=e148]
+  - alert [ref=e151]

@@ -1,0 +1,60 @@
+- generic [ref=e4]:
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - heading "シフト管理" [level=1] [ref=e7]
+      - paragraph [ref=e8]: 管理者（管理者）
+    - button "ログアウト" [ref=e9] [cursor=pointer]
+  - generic [ref=e10]:
+    - button "シフト入力" [active] [ref=e11] [cursor=pointer]
+    - button "シフト一覧" [ref=e12] [cursor=pointer]
+    - button "ユーザー管理" [ref=e13] [cursor=pointer]
+    - button "シフト編集" [ref=e14] [cursor=pointer]
+    - button "アカウント設定" [ref=e15] [cursor=pointer]
+  - generic [ref=e213]:
+    - generic [ref=e214]:
+      - button "◀" [ref=e215] [cursor=pointer]
+      - heading "2026年 4月" [level=2] [ref=e216]
+      - button "▶" [ref=e217] [cursor=pointer]
+    - generic [ref=e218]:
+      - generic [ref=e219]: 日
+      - generic [ref=e220]: 月
+      - generic [ref=e221]: 火
+      - generic [ref=e222]: 水
+      - generic [ref=e223]: 木
+      - generic [ref=e224]: 金
+      - generic [ref=e225]: 土
+    - generic [ref=e226]:
+      - button "1" [ref=e230] [cursor=pointer]
+      - button "2" [ref=e231] [cursor=pointer]
+      - button "3" [ref=e232] [cursor=pointer]
+      - button "4" [ref=e233] [cursor=pointer]
+      - button "5" [ref=e234] [cursor=pointer]
+      - button "6" [ref=e235] [cursor=pointer]
+      - button "7" [ref=e236] [cursor=pointer]
+      - button "8" [ref=e237] [cursor=pointer]
+      - button "9" [ref=e238] [cursor=pointer]
+      - button "10" [ref=e239] [cursor=pointer]
+      - button "11" [ref=e240] [cursor=pointer]
+      - button "12" [ref=e241] [cursor=pointer]
+      - button "13" [ref=e242] [cursor=pointer]
+      - button "14" [ref=e243] [cursor=pointer]
+      - button "15" [ref=e244] [cursor=pointer]
+      - button "16" [ref=e245] [cursor=pointer]
+      - button "17" [ref=e246] [cursor=pointer]
+      - button "18" [ref=e247] [cursor=pointer]
+      - button "19" [ref=e248] [cursor=pointer]
+      - button "20" [ref=e249] [cursor=pointer]
+      - button "21" [ref=e250] [cursor=pointer]
+      - button "22" [ref=e251] [cursor=pointer]
+      - button "23" [ref=e252] [cursor=pointer]
+      - button "24" [ref=e253] [cursor=pointer]
+      - button "25" [ref=e254] [cursor=pointer]
+      - button "26" [ref=e255] [cursor=pointer]
+      - button "27" [ref=e256] [cursor=pointer]
+      - button "28" [ref=e257] [cursor=pointer]
+      - button "29" [ref=e258] [cursor=pointer]
+      - button "30" [ref=e259] [cursor=pointer]
+    - generic [ref=e260]: 出勤日：0日
+    - generic [ref=e261]:
+      - button "一時保存" [ref=e262] [cursor=pointer]
+      - button "提出する" [ref=e263] [cursor=pointer]

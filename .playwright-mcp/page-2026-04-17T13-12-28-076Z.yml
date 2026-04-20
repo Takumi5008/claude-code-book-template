@@ -1,0 +1,76 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - img [ref=e8]
+        - generic [ref=e10]:
+          - heading "シフト管理" [level=1] [ref=e11]
+          - paragraph [ref=e12]: 管理者（管理者）
+      - button "ログアウト" [ref=e13] [cursor=pointer]
+    - generic [ref=e15]:
+      - button "📝 シフト入力" [active] [ref=e16] [cursor=pointer]:
+        - generic [ref=e17]: 📝
+        - text: シフト入力
+      - button "📋 シフト一覧" [ref=e18] [cursor=pointer]:
+        - generic [ref=e19]: 📋
+        - text: シフト一覧
+      - button "👥 ユーザー管理" [ref=e20] [cursor=pointer]:
+        - generic [ref=e21]: 👥
+        - text: ユーザー管理
+      - button "✏️ シフト編集" [ref=e22] [cursor=pointer]:
+        - generic [ref=e23]: ✏️
+        - text: シフト編集
+      - button "⚙️ アカウント設定" [ref=e24] [cursor=pointer]:
+        - generic [ref=e25]: ⚙️
+        - text: アカウント設定
+  - main [ref=e26]:
+    - generic [ref=e349]:
+      - generic [ref=e350]:
+        - button "◀" [ref=e351] [cursor=pointer]
+        - heading "2026年 4月" [level=2] [ref=e352]
+        - button "▶" [ref=e353] [cursor=pointer]
+      - generic [ref=e354]:
+        - generic [ref=e355]: 日
+        - generic [ref=e356]: 月
+        - generic [ref=e357]: 火
+        - generic [ref=e358]: 水
+        - generic [ref=e359]: 木
+        - generic [ref=e360]: 金
+        - generic [ref=e361]: 土
+      - generic [ref=e362]:
+        - button "1" [ref=e366] [cursor=pointer]
+        - button "2" [ref=e367] [cursor=pointer]
+        - button "3" [ref=e368] [cursor=pointer]
+        - button "4" [ref=e369] [cursor=pointer]
+        - button "5" [ref=e370] [cursor=pointer]
+        - button "6" [ref=e371] [cursor=pointer]
+        - button "7" [ref=e372] [cursor=pointer]
+        - button "8" [ref=e373] [cursor=pointer]
+        - button "9" [ref=e374] [cursor=pointer]
+        - button "10" [ref=e375] [cursor=pointer]
+        - button "11" [ref=e376] [cursor=pointer]
+        - button "12" [ref=e377] [cursor=pointer]
+        - button "13" [ref=e378] [cursor=pointer]
+        - button "14" [ref=e379] [cursor=pointer]
+        - button "15" [ref=e380] [cursor=pointer]
+        - button "16" [ref=e381] [cursor=pointer]
+        - button "17" [ref=e382] [cursor=pointer]
+        - button "18" [ref=e383] [cursor=pointer]
+        - button "19" [ref=e384] [cursor=pointer]
+        - button "20" [ref=e385] [cursor=pointer]
+        - button "21" [ref=e386] [cursor=pointer]
+        - button "22" [ref=e387] [cursor=pointer]
+        - button "23" [ref=e388] [cursor=pointer]
+        - button "24" [ref=e389] [cursor=pointer]
+        - button "25" [ref=e390] [cursor=pointer]
+        - button "26" [ref=e391] [cursor=pointer]
+        - button "27" [ref=e392] [cursor=pointer]
+        - button "28" [ref=e393] [cursor=pointer]
+        - button "29" [ref=e394] [cursor=pointer]
+        - button "30" [ref=e395] [cursor=pointer]
+      - generic [ref=e397]:
+        - text: 出勤日：
+        - generic [ref=e398]: 0日
+      - generic [ref=e399]:
+        - button "一時保存" [ref=e400] [cursor=pointer]
+        - button "提出する" [ref=e401] [cursor=pointer]

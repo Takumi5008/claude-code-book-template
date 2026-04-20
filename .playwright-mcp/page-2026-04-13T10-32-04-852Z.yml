@@ -1,0 +1,45 @@
+- generic [ref=e3]:
+  - heading "タスク管理" [level=1] [ref=e4]
+  - generic [ref=e5]:
+    - textbox "新しいタスクを入力..." [ref=e6]
+    - generic [ref=e7]:
+      - button "高" [ref=e8] [cursor=pointer]
+      - button "中" [ref=e9] [cursor=pointer]
+      - button "低" [ref=e10] [cursor=pointer]
+    - button "追加" [ref=e11] [cursor=pointer]
+  - generic [ref=e12]:
+    - button "すべて" [ref=e13] [cursor=pointer]
+    - button "未完了" [ref=e14] [cursor=pointer]
+    - button "完了済" [ref=e15] [cursor=pointer]
+  - list [ref=e16]:
+    - listitem [ref=e17]:
+      - button "完了トグル" [ref=e18] [cursor=pointer]
+      - generic [ref=e19]: データベース保存テスト
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - button "高" [ref=e22] [cursor=pointer]
+          - button "中" [ref=e23] [cursor=pointer]
+          - button "低" [ref=e24] [cursor=pointer]
+        - button "編集" [ref=e25] [cursor=pointer]
+        - button "削除" [ref=e26] [cursor=pointer]
+    - listitem [ref=e27]:
+      - button "完了トグル" [ref=e28] [cursor=pointer]
+      - generic [ref=e29]: あ
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - button "高" [ref=e32] [cursor=pointer]
+          - button "中" [ref=e33] [cursor=pointer]
+          - button "低" [ref=e34] [cursor=pointer]
+        - button "編集" [ref=e35] [cursor=pointer]
+        - button "削除" [ref=e36] [cursor=pointer]
+    - listitem [ref=e37]:
+      - button "完了トグル" [ref=e38] [cursor=pointer]
+      - generic [ref=e39]: あ
+      - generic [ref=e40]:
+        - generic [ref=e41]:
+          - button "高" [ref=e42] [cursor=pointer]
+          - button "中" [ref=e43] [cursor=pointer]
+          - button "低" [ref=e44] [cursor=pointer]
+        - button "編集" [ref=e45] [cursor=pointer]
+        - button "削除" [ref=e46] [cursor=pointer]
+  - paragraph [ref=e47]: "未完了: 3 件 ／ 完了: 0 件"

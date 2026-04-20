@@ -1,0 +1,60 @@
+- generic [ref=e17]:
+  - generic [ref=e18]:
+    - generic [ref=e19]:
+      - heading "シフト管理" [level=1] [ref=e20]
+      - paragraph [ref=e21]: 管理者（管理者）
+    - button "ログアウト" [ref=e22] [cursor=pointer]
+  - generic [ref=e23]:
+    - button "シフト入力" [ref=e24] [cursor=pointer]
+    - button "シフト一覧" [ref=e25] [cursor=pointer]
+    - button "ユーザー管理" [active] [ref=e26] [cursor=pointer]
+    - button "シフト編集" [ref=e27] [cursor=pointer]
+    - button "アカウント設定" [ref=e28] [cursor=pointer]
+  - generic [ref=e293]:
+    - heading "ユーザー管理" [level=3] [ref=e294]
+    - generic [ref=e295]:
+      - generic [ref=e296]:
+        - generic [ref=e297]:
+          - paragraph [ref=e298]: 管理者
+          - paragraph [ref=e299]: admin@example.com
+        - generic [ref=e301]: 管理者
+      - generic [ref=e302]:
+        - generic [ref=e303]:
+          - paragraph [ref=e304]: 田中太郎
+          - paragraph [ref=e305]: tanaka@example.com
+        - generic [ref=e306]:
+          - generic [ref=e307]: メンバー
+          - button "管理者に変更" [ref=e308] [cursor=pointer]
+          - button "削除" [ref=e309] [cursor=pointer]
+      - generic [ref=e310]:
+        - generic [ref=e311]:
+          - paragraph [ref=e312]: 佐藤花子
+          - paragraph [ref=e313]: sato@example.com
+        - generic [ref=e314]:
+          - generic [ref=e315]: メンバー
+          - button "管理者に変更" [ref=e316] [cursor=pointer]
+          - button "削除" [ref=e317] [cursor=pointer]
+      - generic [ref=e318]:
+        - generic [ref=e319]:
+          - paragraph [ref=e320]: 鈴木一郎
+          - paragraph [ref=e321]: suzuki@example.com
+        - generic [ref=e322]:
+          - generic [ref=e323]: メンバー
+          - button "管理者に変更" [ref=e324] [cursor=pointer]
+          - button "削除" [ref=e325] [cursor=pointer]
+      - generic [ref=e326]:
+        - generic [ref=e327]:
+          - paragraph [ref=e328]: 山田次郎
+          - paragraph [ref=e329]: yamada@example.com
+        - generic [ref=e330]:
+          - generic [ref=e331]: メンバー
+          - button "管理者に変更" [ref=e332] [cursor=pointer]
+          - button "削除" [ref=e333] [cursor=pointer]
+      - generic [ref=e334]:
+        - generic [ref=e335]:
+          - paragraph [ref=e336]: 小守谷拓実
+          - paragraph [ref=e337]: komotaku0508@gmail.com
+        - generic [ref=e338]:
+          - generic [ref=e339]: 管理者
+          - button "メンバーに変更" [ref=e340] [cursor=pointer]
+          - button "削除" [ref=e341] [cursor=pointer]

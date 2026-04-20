@@ -1,0 +1,21 @@
+[      80ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5174/node_modules/.vite/deps/chunk-373CG7ZK.js?v=baf57fcc:21548
+[      95ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/auth/me:0
+[      99ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/auth/me:0
+[     200ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5174/:0
+[  146091ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:5174/@vite/client:559
+[  146575ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5174/node_modules/.vite/deps/chunk-373CG7ZK.js?v=28768290:21548
+[  146610ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/auth/me:0
+[  146616ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/auth/me:0
+[  146717ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5174/:0
+[  150035ms] [ERROR] WebSocket connection to 'ws://localhost:5174/?token=D-QzZpo7W-rG' failed:  @ http://localhost:5174/@vite/client:535
+[  150036ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:5174/@vite/client:559
+[  151049ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:5174/:0
+[  152768ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5174/node_modules/.vite/deps/chunk-373CG7ZK.js?v=28768290:21548
+[  152786ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/auth/me:0
+[  152790ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/auth/me:0
+[  152891ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5174/:0
+[  385578ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/auth/me:0
+[  423480ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/auth/me:0
+[  423487ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/auth/me:0
+[  423586ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5174/:0
+[  428606ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/auth/me:0

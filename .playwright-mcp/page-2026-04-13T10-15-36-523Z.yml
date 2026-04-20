@@ -1,0 +1,23 @@
+- generic [ref=e3]:
+  - heading "タスク管理" [level=1] [ref=e4]
+  - generic [ref=e5]:
+    - textbox "新しいタスクを入力..." [ref=e6]
+    - button "追加" [ref=e7] [cursor=pointer]
+  - generic [ref=e8]:
+    - button "すべて" [ref=e9] [cursor=pointer]
+    - button "未完了" [ref=e10] [cursor=pointer]
+    - button "完了済" [ref=e11] [cursor=pointer]
+  - list [ref=e12]:
+    - listitem [ref=e13]:
+      - button "完了トグル" [ref=e14] [cursor=pointer]
+      - generic [ref=e15]: Reactの勉強をする
+      - button "✕" [ref=e16] [cursor=pointer]
+    - listitem [ref=e17]:
+      - button "✓" [ref=e18] [cursor=pointer]
+      - generic [ref=e19]: 買い物リストを作る
+      - button "✕" [ref=e20] [cursor=pointer]
+    - listitem [ref=e21]:
+      - button "完了トグル" [ref=e22] [cursor=pointer]
+      - generic [ref=e23]: タスク管理アプリを完成させる
+      - button "✕" [ref=e24] [cursor=pointer]
+  - paragraph [ref=e25]: "未完了: 2 件 ／ 完了: 1 件"

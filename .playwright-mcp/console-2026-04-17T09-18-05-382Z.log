@@ -1,0 +1,15 @@
+[     139ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:5174/node_modules/.vite/deps/chunk-373CG7ZK.js?v=28768290:21548
+[     172ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/auth/me:0
+[     178ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/auth/me:0
+[     277ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5174/:0
+[  320542ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/deadlines?year=2026&month=4:0
+[  320561ms] Error: 認証が必要です
+    at request (http://localhost:5174/src/api/client.js?t=1776417805759:9:22)
+[  320550ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/deadlines/unsubmitted?year=2026&month=4:0
+[  320551ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/shifts/all?year=2026&month=4:0
+[  320553ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:5174/api/auth/me:0
+[  320570ms] Error: 認証が必要です
+    at request (http://localhost:5174/src/api/client.js?t=1776417805759:9:22)
+[  320572ms] Error: 認証が必要です
+    at request (http://localhost:5174/src/api/client.js?t=1776417805759:9:22)
+[  320664ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:5174/:0

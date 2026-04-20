@@ -1,0 +1,53 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - generic [ref=e7]: H
+          - generic [ref=e8]: HKR管理
+        - button [ref=e9]:
+          - img [ref=e10]
+    - navigation [ref=e11]:
+      - generic [ref=e12]:
+        - link "ダッシュ" [ref=e13] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e14]
+          - generic [ref=e19]: ダッシュ
+        - link "データ入" [ref=e20] [cursor=pointer]:
+          - /url: /input
+          - img [ref=e21]
+          - generic [ref=e23]: データ入
+        - link "マイ推移" [ref=e24] [cursor=pointer]:
+          - /url: /trends
+          - img [ref=e25]
+          - generic [ref=e28]: マイ推移
+        - link "チーム全" [ref=e29] [cursor=pointer]:
+          - /url: /team
+          - img [ref=e30]
+          - generic [ref=e35]: チーム全
+    - main [ref=e36]:
+      - generic [ref=e37]:
+        - generic [ref=e38]:
+          - paragraph [ref=e39]: Team
+          - heading "チーム全体" [level=1] [ref=e40]
+          - paragraph [ref=e41]: 2026年4月のHKR一覧
+        - combobox [ref=e43]:
+          - option "2026年4月" [selected]
+          - option "2026年3月"
+          - option "2026年2月"
+          - option "2026年1月"
+          - option "2025年12月"
+          - option "2025年11月"
+          - option "2025年10月"
+          - option "2025年9月"
+          - option "2025年8月"
+          - option "2025年7月"
+          - option "2025年6月"
+          - option "2025年5月"
+        - generic [ref=e45]:
+          - paragraph [ref=e46]: チーム平均（合算）
+          - paragraph [ref=e47]: "-"
+        - generic [ref=e49]: 読み込み中...
+  - button "Open Next.js Dev Tools" [ref=e55] [cursor=pointer]:
+    - img [ref=e56]
+  - alert [ref=e59]

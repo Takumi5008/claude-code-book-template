@@ -1,9 +1,8 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
-import crypto from 'crypto';
-import { getUserByEmail, getUserById, createUser, getAllUsers, updateUserRole, updateUserName, updateUserPassword, recordLogin, deleteUser, getUserCount, createResetToken, getResetToken, markResetTokenUsed } from '../db.js';
+import { getUserByEmail, getUserById, createUser, getAllUsers, updateUserRole, updateUserName, updateUserPassword, recordLogin, deleteUser, getUserCount, createResetToken, getResetToken, markResetTokenUsed, updateUserPhone } from '../db.js';
 import { requireLogin, requireAdmin } from '../middleware/auth.js';
-import { sendPasswordResetEmail } from '../mailer.js';
+import { sendOtp } from '../mailer.js';
 
 const router = Router();
 
@@ -23,7 +22,7 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, phone } = req.body;
   if (!name || !email || !password) {
     return res.status(400).json({ error: '名前・メールアドレス・パスワードを入力してください' });
   }
@@ -34,7 +33,7 @@ router.post('/register', async (req, res) => {
   if (existing) return res.status(400).json({ error: 'このメールアドレスはすでに登録されています' });
   const hash = await bcrypt.hash(password, 10);
   const isFirstUser = (await getUserCount()) === 0;
-  const user = await createUser(name, email, hash, isFirstUser ? 'admin' : 'member');
+  const user = await createUser(name, email, hash, isFirstUser ? 'admin' : 'member', phone || null);
   req.session.userId = user.id;
   req.session.role = user.role;
   await recordLogin(user.id);
@@ -49,30 +48,28 @@ router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: 'メールアドレスを入力してください' });
   const user = await getUserByEmail(email);
-  if (!user) return res.json({ ok: true }); // セキュリティのため存在しない場合も成功を返す
-  const token = crypto.randomBytes(32).toString('hex');
-  const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1時間
-  await createResetToken(user.id, token, expiresAt);
-  const appUrl = process.env.APP_URL || 'http://localhost:5173';
-  const resetUrl = `${appUrl}/reset-password?token=${token}`;
+  if (!user || !user.phone) return res.status(400).json({ error: 'このメールアドレスに紐づく電話番号が登録されていません' });
+  const otp = String(Math.floor(100000 + Math.random() * 900000)); // 6桁
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10分
+  await createResetToken(user.id, otp, expiresAt);
   try {
-    await sendPasswordResetEmail(email, resetUrl);
+    await sendOtp(user.phone, otp);
     res.json({ ok: true });
   } catch (err) {
-    console.error('Mail send error:', err);
-    res.status(500).json({ error: 'メール送信に失敗しました。管理者にお問い合わせください。' });
+    console.error('SMS send error:', err);
+    res.status(500).json({ error: 'SMS送信に失敗しました。管理者にお問い合わせください。' });
   }
 });
 
 router.post('/reset-password', async (req, res) => {
-  const { token, newPassword } = req.body;
-  if (!token || !newPassword) return res.status(400).json({ error: '不正なリクエストです' });
+  const { otp, newPassword } = req.body;
+  if (!otp || !newPassword) return res.status(400).json({ error: '不正なリクエストです' });
   if (newPassword.length < 6) return res.status(400).json({ error: 'パスワードは6文字以上で入力してください' });
-  const record = await getResetToken(token);
-  if (!record) return res.status(400).json({ error: 'リンクが無効または期限切れです' });
+  const record = await getResetToken(otp);
+  if (!record) return res.status(400).json({ error: 'コードが無効または期限切れです' });
   const hash = await bcrypt.hash(newPassword, 10);
   await updateUserPassword(record.user_id, hash);
-  await markResetTokenUsed(token);
+  await markResetTokenUsed(otp);
   res.json({ ok: true });
 });
 
@@ -107,13 +104,13 @@ router.get('/users', requireAdmin, async (req, res) => {
 });
 
 router.post('/users', requireAdmin, async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, phone } = req.body;
   if (!name || !email || !password) return res.status(400).json({ error: '名前・メールアドレス・パスワードを入力してください' });
   if (password.length < 6) return res.status(400).json({ error: 'パスワードは6文字以上で入力してください' });
   const existing = await getUserByEmail(email);
   if (existing) return res.status(400).json({ error: 'このメールアドレスはすでに登録されています' });
   const hash = await bcrypt.hash(password, 10);
-  const user = await createUser(name, email, hash, 'member');
+  const user = await createUser(name, email, hash, 'member', phone || null);
   res.json(user);
 });
 

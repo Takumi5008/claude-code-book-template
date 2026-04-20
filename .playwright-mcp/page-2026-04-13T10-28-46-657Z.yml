@@ -1,0 +1,29 @@
+- generic [ref=e3]:
+  - heading "タスク管理" [level=1] [ref=e4]
+  - generic [ref=e5]:
+    - textbox "新しいタスクを入力..." [ref=e6]
+    - button "追加" [ref=e7] [cursor=pointer]
+  - generic [ref=e8]:
+    - button "すべて" [ref=e9] [cursor=pointer]
+    - button "未完了" [ref=e10] [cursor=pointer]
+    - button "完了済" [ref=e11] [cursor=pointer]
+  - list [ref=e12]:
+    - listitem [ref=e13]:
+      - button "完了トグル" [ref=e14] [cursor=pointer]
+      - generic [ref=e15]: データベース保存テスト
+      - generic [ref=e16]:
+        - button "編集" [ref=e17] [cursor=pointer]
+        - button "削除" [ref=e18] [cursor=pointer]
+    - listitem [ref=e19]:
+      - button "完了トグル" [ref=e20] [cursor=pointer]
+      - generic [ref=e21]: あ
+      - generic [ref=e22]:
+        - button "編集" [ref=e23] [cursor=pointer]
+        - button "削除" [ref=e24] [cursor=pointer]
+    - listitem [ref=e25]:
+      - button "完了トグル" [ref=e26] [cursor=pointer]
+      - generic [ref=e27]: あ
+      - generic [ref=e28]:
+        - button "編集" [ref=e29] [cursor=pointer]
+        - button "削除" [ref=e30] [cursor=pointer]
+  - paragraph [ref=e31]: "未完了: 3 件 ／ 完了: 0 件"

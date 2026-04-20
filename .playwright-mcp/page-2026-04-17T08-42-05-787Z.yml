@@ -1,0 +1,16 @@
+- generic [ref=e17]:
+  - heading "新規登録" [level=1] [ref=e18]
+  - generic [ref=e19]:
+    - generic [ref=e20]:
+      - generic [ref=e21]: 名前
+      - textbox [ref=e22]
+    - generic [ref=e23]:
+      - generic [ref=e24]: メールアドレス
+      - textbox [ref=e25]
+    - generic [ref=e26]:
+      - generic [ref=e27]: パスワード（6文字以上）
+      - textbox [ref=e28]
+    - button "アカウントを作成" [ref=e29] [cursor=pointer]
+  - paragraph [ref=e30]:
+    - text: すでにアカウントをお持ちの方は
+    - button "ログイン" [ref=e31] [cursor=pointer]

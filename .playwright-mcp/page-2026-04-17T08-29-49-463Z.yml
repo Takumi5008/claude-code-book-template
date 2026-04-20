@@ -1,0 +1,10 @@
+- generic [ref=e74]:
+  - heading "シフト管理" [level=1] [ref=e75]
+  - generic [ref=e76]:
+    - generic [ref=e77]:
+      - generic [ref=e78]: メールアドレス
+      - textbox [ref=e79]
+    - generic [ref=e80]:
+      - generic [ref=e81]: パスワード
+      - textbox [ref=e82]
+    - button "ログイン" [ref=e83] [cursor=pointer]

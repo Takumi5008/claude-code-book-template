@@ -1,0 +1,57 @@
+- generic [ref=e17]:
+  - generic [ref=e18]:
+    - generic [ref=e19]:
+      - heading "シフト管理" [level=1] [ref=e20]
+      - paragraph [ref=e21]: 田中太郎
+    - button "ログアウト" [ref=e22] [cursor=pointer]
+  - generic [ref=e23]:
+    - button "シフト入力" [ref=e24] [cursor=pointer]
+    - button "アカウント設定" [ref=e25] [cursor=pointer]
+  - generic [ref=e26]:
+    - generic [ref=e27]:
+      - button "◀" [ref=e28] [cursor=pointer]
+      - heading "2026年 4月" [level=2] [ref=e29]
+      - button "▶" [ref=e30] [cursor=pointer]
+    - generic [ref=e31]:
+      - generic [ref=e32]: 日
+      - generic [ref=e33]: 月
+      - generic [ref=e34]: 火
+      - generic [ref=e35]: 水
+      - generic [ref=e36]: 木
+      - generic [ref=e37]: 金
+      - generic [ref=e38]: 土
+    - generic [ref=e39]:
+      - button "1" [ref=e43] [cursor=pointer]
+      - button "2" [ref=e44] [cursor=pointer]
+      - button "3" [ref=e45] [cursor=pointer]
+      - button "4" [ref=e46] [cursor=pointer]
+      - button "5" [ref=e47] [cursor=pointer]
+      - button "6" [ref=e48] [cursor=pointer]
+      - button "7" [ref=e49] [cursor=pointer]
+      - button "8" [ref=e50] [cursor=pointer]
+      - button "9" [ref=e51] [cursor=pointer]
+      - button "10" [ref=e52] [cursor=pointer]
+      - button "11" [ref=e53] [cursor=pointer]
+      - button "12" [ref=e54] [cursor=pointer]
+      - button "13" [ref=e55] [cursor=pointer]
+      - button "14" [ref=e56] [cursor=pointer]
+      - button "15" [ref=e57] [cursor=pointer]
+      - button "16" [ref=e58] [cursor=pointer]
+      - button "17" [ref=e59] [cursor=pointer]
+      - button "18" [ref=e60] [cursor=pointer]
+      - button "19" [ref=e61] [cursor=pointer]
+      - button "20" [ref=e62] [cursor=pointer]
+      - button "21" [ref=e63] [cursor=pointer]
+      - button "22" [ref=e64] [cursor=pointer]
+      - button "23" [ref=e65] [cursor=pointer]
+      - button "24" [ref=e66] [cursor=pointer]
+      - button "25" [ref=e67] [cursor=pointer]
+      - button "26" [ref=e68] [cursor=pointer]
+      - button "27" [ref=e69] [cursor=pointer]
+      - button "28" [ref=e70] [cursor=pointer]
+      - button "29" [ref=e71] [cursor=pointer]
+      - button "30" [ref=e72] [cursor=pointer]
+    - generic [ref=e73]: 出勤日：3日✓ 提出済み
+    - generic [ref=e74]:
+      - button "一時保存" [ref=e75] [cursor=pointer]
+      - button "提出する" [ref=e76] [cursor=pointer]
