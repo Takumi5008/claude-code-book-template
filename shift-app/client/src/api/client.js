@@ -53,4 +53,7 @@ export const api = {
   saveMyMtg: (date, status, reason) =>
     request('/api/mtg/my', { method: 'POST', body: { date, status, reason } }),
   getAllMtg: () => request('/api/mtg/all'),
+  getMtgDeadlines: () => request('/api/mtg/deadlines'),
+  setMtgDeadline: (date, deadlineAt) =>
+    request('/api/mtg/deadline', { method: 'POST', body: { date, deadlineAt } }),
 };

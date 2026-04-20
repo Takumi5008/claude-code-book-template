@@ -58,6 +58,14 @@ export const initDb = async () => {
   await q(`ALTER TABLE users ADD COLUMN IF NOT EXISTS temp_password TEXT`);
   await q(`ALTER TABLE users ADD COLUMN IF NOT EXISTS temp_password_expires_at TIMESTAMP`);
   await q(`
+    CREATE TABLE IF NOT EXISTS mtg_deadlines (
+      id SERIAL PRIMARY KEY,
+      date TEXT NOT NULL UNIQUE,
+      deadline_at TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  await q(`
     CREATE TABLE IF NOT EXISTS password_reset_tokens (
       id SERIAL PRIMARY KEY,
       user_id INTEGER NOT NULL REFERENCES users(id),
@@ -191,6 +199,21 @@ export const getUnsubmittedMembers = async (year, month) => {
     ORDER BY u.name
   `, [year, month]);
   return res.rows;
+};
+
+export const getMtgDeadlines = async (dates) => {
+  if (!dates || dates.length === 0) return [];
+  const placeholders = dates.map((_, i) => `$${i + 1}`).join(',');
+  const res = await q(`SELECT * FROM mtg_deadlines WHERE date IN (${placeholders})`, dates);
+  return res.rows;
+};
+
+export const upsertMtgDeadline = async (date, deadlineAt) => {
+  await q(`
+    INSERT INTO mtg_deadlines (date, deadline_at)
+    VALUES ($1, $2)
+    ON CONFLICT (date) DO UPDATE SET deadline_at = EXCLUDED.deadline_at
+  `, [date, deadlineAt]);
 };
 
 export const upsertMtgAttendance = async (userId, date, status, reason) => {

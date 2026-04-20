@@ -9,13 +9,15 @@ const formatDate = (dateStr) => {
 const MtgAttendance = () => {
   const [fridays, setFridays] = useState([]);
   const [attendance, setAttendance] = useState({});
+  const [deadlines, setDeadlines] = useState({});
   const [saving, setSaving] = useState(null);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    Promise.all([api.getMtgFridays(), api.getMyMtg()]).then(([dates, map]) => {
+    Promise.all([api.getMtgFridays(), api.getMyMtg(), api.getMtgDeadlines()]).then(([dates, map, dl]) => {
       setFridays(dates);
       setAttendance(map);
+      setDeadlines(dl);
     });
   }, []);
 
@@ -63,6 +65,10 @@ const MtgAttendance = () => {
   };
 
   const today = new Date().toISOString().slice(0, 10);
+  const isDeadlinePassed = (date) => {
+    const dl = deadlines[date];
+    return dl && new Date(dl) < new Date();
+  };
 
   return (
     <div className="bg-white rounded-2xl shadow-md ring-1 ring-gray-100 p-6 max-w-lg mx-auto">
@@ -85,17 +91,27 @@ const MtgAttendance = () => {
         {fridays.map((date) => {
           const rec = attendance[date] || {};
           const isPast = date < today;
+          const locked = isPast || isDeadlinePassed(date);
+          const dl = deadlines[date];
           return (
-            <div key={date} className={`rounded-xl p-4 ${isPast ? 'bg-gray-50 opacity-70' : 'bg-indigo-50/50 ring-1 ring-indigo-100'}`}>
+            <div key={date} className={`rounded-xl p-4 ${locked ? 'bg-gray-50 opacity-70' : 'bg-indigo-50/50 ring-1 ring-indigo-100'}`}>
               <div className="flex items-center justify-between mb-2">
-                <span className={`text-sm font-bold ${isPast ? 'text-gray-500' : 'text-gray-800'}`}>
-                  {formatDate(date)}
-                  {date === today && <span className="ml-2 text-xs bg-indigo-600 text-white px-2 py-0.5 rounded-full">今週</span>}
-                </span>
+                <div>
+                  <span className={`text-sm font-bold ${locked ? 'text-gray-500' : 'text-gray-800'}`}>
+                    {formatDate(date)}
+                    {date === today && <span className="ml-2 text-xs bg-indigo-600 text-white px-2 py-0.5 rounded-full">今週</span>}
+                  </span>
+                  {dl && (
+                    <p className={`text-xs mt-0.5 ${isDeadlinePassed(date) ? 'text-rose-500' : 'text-gray-400'}`}>
+                      締切: {new Date(dl).toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                      {isDeadlinePassed(date) && '（終了）'}
+                    </p>
+                  )}
+                </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleStatus(date, 'present')}
-                    disabled={saving === date || isPast}
+                    disabled={saving === date || locked}
                     className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition ${
                       rec.status === 'present'
                         ? 'bg-emerald-500 text-white shadow-sm'
@@ -106,7 +122,7 @@ const MtgAttendance = () => {
                   </button>
                   <button
                     onClick={() => handleStatus(date, 'absent')}
-                    disabled={saving === date || isPast}
+                    disabled={saving === date || locked}
                     className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition ${
                       rec.status === 'absent'
                         ? 'bg-rose-500 text-white shadow-sm'
@@ -117,7 +133,7 @@ const MtgAttendance = () => {
                   </button>
                 </div>
               </div>
-              {rec.status === 'absent' && !isPast && (
+              {rec.status === 'absent' && !locked && (
                 <input
                   type="text"
                   placeholder="欠席理由を入力（任意）"
@@ -127,7 +143,7 @@ const MtgAttendance = () => {
                   className="w-full mt-1 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-300 bg-white"
                 />
               )}
-              {rec.status === 'absent' && rec.reason && isPast && (
+              {rec.status === 'absent' && rec.reason && locked && (
                 <p className="text-xs text-gray-500 mt-1">理由: {rec.reason}</p>
               )}
             </div>
