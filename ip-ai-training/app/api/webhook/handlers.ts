@@ -18,13 +18,25 @@ export async function handleMessage(event: WebhookEvent) {
   const lineUserId = event.source.userId;
   if (!lineUserId) return;
 
-  const user = await prisma.user.findUnique({ where: { lineUserId } });
+  let user = await prisma.user.findUnique({ where: { lineUserId } });
 
   // 未登録ユーザー → 登録フローへ
   if (!user) {
     await handleRegistration(event);
     return;
   }
+
+  // LINEプロフィール名が変わっていれば自動更新
+  try {
+    const profile = await lineClient.getProfile(lineUserId);
+    if (profile.displayName !== user.name) {
+      user = await prisma.user.update({
+        where: { lineUserId },
+        data: { name: profile.displayName },
+      });
+    }
+  } catch {}
+
 
   const text = extractTextFromEvent(event)?.trim() ?? "";
   const state = await prisma.conversationState.findUnique({
