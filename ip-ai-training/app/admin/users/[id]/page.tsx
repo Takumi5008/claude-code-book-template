@@ -57,7 +57,7 @@ export default async function UserDetailPage({ params }: Props) {
     );
   }
 
-  const days = Math.floor((Date.now() - user.joinedAt.getTime()) / 86400000);
+  const days = Math.floor((Date.now() - user.joinedAt.getTime()) / 86400000) + 1;
   const step = user.progress?.currentStep ?? "ASSIGNED";
   const passedTests = new Set(
     user.testResults.filter((t) => t.passed).map((t) => t.testNumber)

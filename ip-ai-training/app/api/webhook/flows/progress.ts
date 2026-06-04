@@ -55,7 +55,7 @@ export async function handleProgress(event: WebhookEvent, user: User) {
 
   const joinedDays = Math.floor(
     (Date.now() - user.joinedAt.getTime()) / (1000 * 60 * 60 * 24)
-  );
+  ) + 1;
 
   // チェックリスト進捗
   const completedItems = checklist.filter((c) => c.completed).length;

@@ -32,7 +32,7 @@ export default async function AdminPage() {
 
   const totalUsers = users.length;
   const avgDays = totalUsers > 0
-    ? Math.round(users.reduce((s, u) => s + Math.floor((Date.now() - u.joinedAt.getTime()) / 86400000), 0) / totalUsers)
+    ? Math.round(users.reduce((s, u) => s + Math.floor((Date.now() - u.joinedAt.getTime()) / 86400000) + 1, 0) / totalUsers)
     : 0;
   const test3Passed = users.filter((u) => u.testResults.some((t) => t.testNumber === 3)).length;
 
@@ -65,7 +65,7 @@ export default async function AdminPage() {
         </thead>
         <tbody>
           {users.map((user) => {
-            const days = Math.floor((Date.now() - user.joinedAt.getTime()) / 86400000);
+            const days = Math.floor((Date.now() - user.joinedAt.getTime()) / 86400000) + 1;
             const step = user.progress?.currentStep ?? "ASSIGNED";
             const stepIdx = STEP_ORDER.indexOf(step);
             const progressPct = Math.round((stepIdx / (STEP_ORDER.length - 1)) * 100);

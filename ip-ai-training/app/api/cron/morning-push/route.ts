@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
 
       const joinedDays = Math.floor(
         (Date.now() - user.joinedAt.getTime()) / (1000 * 60 * 60 * 24)
-      );
+      ) + 1;
 
       const passedTests = user.testResults.map((r) => r.testNumber);
       const todayTask = getTodayTask(currentStep, passedTests);
