@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { lineClient, replyMessages, replyText, extractTextFromEvent } from "@/lib/line";
 import { handleRegistration } from "./flows/registration";
 import { handlePractice } from "./flows/practice";
+import { handleTest, startTest } from "./flows/test";
 import { handleProgress } from "./flows/progress";
 
 export async function handleMessage(event: WebhookEvent) {
@@ -30,6 +31,20 @@ export async function handleMessage(event: WebhookEvent) {
   });
 
   const currentMode = state?.currentMode ?? null;
+
+  // テスト開始（テストN開始）
+  const testStartMatch = text.match(/^テスト([1-6])開始$/);
+  if (testStartMatch) {
+    const testNumber = parseInt(testStartMatch[1]);
+    await startTest(event as any, user, testNumber);
+    return;
+  }
+
+  // テスト中は継続処理
+  if (currentMode?.startsWith("test_")) {
+    await handleTest(event, user, state!);
+    return;
+  }
 
   // 動画配信
   if (text.startsWith("動画_")) {
@@ -156,10 +171,20 @@ async function startTestMenu(
     return;
   }
 
-  await replyText(
-    event.replyToken,
-    `次のテストはテスト${nextTest}です。\n「テスト${nextTest}開始」と送ってください。`
-  );
+  await replyMessages(event.replyToken, [
+    {
+      type: "text",
+      text: `次のテストはテスト${nextTest}です。\n準備ができたら下のボタンで開始してください。`,
+      quickReply: {
+        items: [
+          {
+            type: "action",
+            action: { type: "message", label: `テスト${nextTest}開始`, text: `テスト${nextTest}開始` },
+          },
+        ],
+      },
+    },
+  ]);
 }
 
 async function handleVideoMenu(event: WebhookEvent) {
