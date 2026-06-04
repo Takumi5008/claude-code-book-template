@@ -22,21 +22,40 @@ type Props = { params: Promise<{ id: string }> };
 
 export default async function UserDetailPage({ params }: Props) {
   const { id } = await params;
-  const user = await prisma.user.findUnique({
-    where: { id },
-    include: {
-      progress: true,
-      testResults: { orderBy: { createdAt: "asc" } },
-      practiceSessions: {
-        where: { score: { not: null } },
-        orderBy: { createdAt: "asc" },
-        select: { score: true, createdAt: true, customerPattern: true },
-      },
-      checklistItems: { orderBy: { itemNumber: "asc" } },
-    },
-  });
 
-  if (!user) notFound();
+  let user;
+  try {
+    user = await prisma.user.findUnique({
+      where: { id },
+      include: {
+        progress: true,
+        testResults: { orderBy: { createdAt: "asc" } },
+        practiceSessions: {
+          where: { score: { not: null } },
+          orderBy: { createdAt: "asc" },
+          select: { score: true, createdAt: true, customerPattern: true },
+        },
+        checklistItems: { orderBy: { itemNumber: "asc" } },
+      },
+    });
+  } catch (e) {
+    return (
+      <main style={{ padding: "2rem", fontFamily: "sans-serif" }}>
+        <p><a href="/admin">← 一覧に戻る</a></p>
+        <h1>エラーが発生しました</h1>
+        <pre style={{ color: "red", fontSize: 13 }}>{String(e)}</pre>
+      </main>
+    );
+  }
+
+  if (!user) {
+    return (
+      <main style={{ padding: "2rem", fontFamily: "sans-serif" }}>
+        <p><a href="/admin">← 一覧に戻る</a></p>
+        <p>ユーザーが見つかりません（ID: {id}）</p>
+      </main>
+    );
+  }
 
   const days = Math.floor((Date.now() - user.joinedAt.getTime()) / 86400000);
   const step = user.progress?.currentStep ?? "ASSIGNED";
