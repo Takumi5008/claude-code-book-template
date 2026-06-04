@@ -9,6 +9,7 @@ import {
   scoreTestConversation,
   CustomerPattern,
 } from "@/lib/claude";
+import { updateEstimatedFirstWork } from "@/lib/estimator";
 
 type TestContext = {
   testNumber: number;
@@ -180,6 +181,7 @@ async function endTest(
         where: { userId: user.id },
         data: { currentStep: nextStep as any },
       });
+      await updateEstimatedFirstWork(user.id, nextStep);
     }
 
     // チェックリスト自動更新

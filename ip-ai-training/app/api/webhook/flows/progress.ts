@@ -2,6 +2,7 @@ import { WebhookEvent } from "@line/bot-sdk";
 import { User } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { replyText } from "@/lib/line";
+import { getTodayTask, updateEstimatedFirstWork } from "@/lib/estimator";
 
 const STEP_LABELS: Record<string, string> = {
   ASSIGNED: "配属",
@@ -22,6 +23,12 @@ const STEP_ORDER = Object.keys(STEP_LABELS);
 
 export async function handleProgress(event: WebhookEvent, user: User) {
   if (event.type !== "message" || !("replyToken" in event)) return;
+
+  // 推定初稼働日を最新化
+  const currentProgress = await prisma.progress.findUnique({ where: { userId: user.id } });
+  if (currentProgress && !currentProgress.estimatedFirstWorkAt) {
+    await updateEstimatedFirstWork(user.id, currentProgress.currentStep);
+  }
 
   const [progress, checklist, testResults, practiceSessions] = await Promise.all([
     prisma.progress.findUnique({ where: { userId: user.id } }),
@@ -84,6 +91,9 @@ export async function handleProgress(event: WebhookEvent, user: User) {
     progress.estimatedFirstWorkAt
       ? `⏱️ 推定初稼働日: ${progress.estimatedFirstWorkAt.toLocaleDateString("ja-JP")}`
       : "",
+    "",
+    `📌 今日やること`,
+    getTodayTask(currentStep, testResults.map((t) => t.testNumber)),
   ]
     .filter(Boolean)
     .join("\n");
