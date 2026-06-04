@@ -31,6 +31,13 @@ export async function handleMessage(event: WebhookEvent) {
 
   const currentMode = state?.currentMode ?? null;
 
+  // 動画配信
+  if (text.startsWith("動画_")) {
+    const category = text.replace("動画_", "");
+    await handleVideoDelivery(event, category);
+    return;
+  }
+
   // パターン選択（練習_A〜E）は練習開始
   if (text.startsWith("練習_")) {
     await handlePractice(event, user, state ?? { id: "", userId: user.id, currentMode: null, contextJson: null, updatedAt: new Date() });
@@ -171,4 +178,17 @@ async function handleVideoMenu(event: WebhookEvent) {
       },
     },
   ]);
+}
+
+async function handleVideoDelivery(event: WebhookEvent, category: string) {
+  if (event.type !== "message" || !("replyToken" in event)) return;
+
+  const video = await prisma.video.findFirst({ where: { category } });
+
+  if (!video) {
+    await replyText(event.replyToken, `「${category}」の動画はまだ登録されていません。管理者にお問い合わせください。`);
+    return;
+  }
+
+  await replyText(event.replyToken, `📹 ${video.title}\n\n${video.url}`);
 }

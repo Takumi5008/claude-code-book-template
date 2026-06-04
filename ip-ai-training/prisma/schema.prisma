@@ -1,0 +1,237 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 新人ユーザー
+model User {
+  id          String   @id @default(cuid())
+  lineUserId  String   @unique @map("line_user_id")
+  name        String
+  team        String?
+  joinedAt    DateTime @map("joined_at")
+  role        Role     @default(TRAINEE)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  progress          Progress?
+  testResults       TestResult[]
+  practiceSessions  PracticeSession[]
+  checklistItems    ChecklistItem[]
+  quizResults       QuizResult[]
+  videoViews        VideoView[]
+  milestones        Milestone[]
+  adminRecords      AdminRecord[]
+  conversationState ConversationState?
+
+  @@map("users")
+}
+
+enum Role {
+  ADMIN
+  TEAM_LEADER
+  VIEWER
+  TRAINEE
+}
+
+// 全体進捗（現在のステップ）
+model Progress {
+  id                   String      @id @default(cuid())
+  userId               String      @unique @map("user_id")
+  currentStep          Step        @default(ASSIGNED) @map("current_step")
+  estimatedFirstWorkAt DateTime?   @map("estimated_first_work_at")
+  firstWorkAt          DateTime?   @map("first_work_at")
+  updatedAt            DateTime    @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("progress")
+}
+
+enum Step {
+  ASSIGNED           // 配属
+  SCRIPT_LEARNING    // スクリプト学習
+  TEST_1             // テスト1
+  TEST_2             // テスト2
+  TEST_3             // テスト3
+  MEETING            // ミーティング参加
+  OBSERVATION        // 見学
+  ASSIGNMENT_MEETING // 配属面談
+  PRACTICE_1         // 実践1
+  PRACTICE_2         // 実践2
+  FIRST_WORK         // 初稼働（実践3）
+  COMPLETED          // 完了
+}
+
+// テスト結果（テスト1〜6）
+model TestResult {
+  id              String          @id @default(cuid())
+  userId          String          @map("user_id")
+  testNumber      Int             @map("test_number")
+  customerPattern CustomerPattern @map("customer_pattern")
+  score           Int
+  passed          Boolean
+  attemptNumber   Int             @map("attempt_number")
+  feedbackJson    Json?           @map("feedback_json")
+  createdAt       DateTime        @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("test_results")
+}
+
+enum CustomerPattern {
+  A // NTT系回線
+  B // JCOM
+  C // ホームルーター・ポケWi-Fi
+  D // アウト多め
+  E // au/UQ mobile使用中
+}
+
+// AI練習セッション
+model PracticeSession {
+  id              String          @id @default(cuid())
+  userId          String          @map("user_id")
+  mode            PracticeMode
+  customerPattern CustomerPattern @map("customer_pattern")
+  score           Int?
+  feedbackJson    Json?           @map("feedback_json")
+  conversationLog Json?           @map("conversation_log")
+  completedAt     DateTime?       @map("completed_at")
+  createdAt       DateTime        @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("practice_sessions")
+}
+
+enum PracticeMode {
+  TEXT
+  VOICE
+}
+
+// チェックリスト13項目
+model ChecklistItem {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  itemNumber  Int       @map("item_number")
+  completed   Boolean   @default(false)
+  completedAt DateTime? @map("completed_at")
+  approvedBy  String?   @map("approved_by")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, itemNumber])
+  @@map("checklist_items")
+}
+
+// 知識クイズ結果
+model QuizResult {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  quizType  String   @map("quiz_type")
+  score     Int
+  passed    Boolean
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("quiz_results")
+}
+
+// 動画ライブラリ
+model Video {
+  id        String   @id @default(cuid())
+  title     String
+  category  String   // スクリプト / 白紙 / 同意書
+  url       String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("videos")
+}
+
+// 動画視聴履歴
+model VideoView {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  videoType String   @map("video_type")
+  viewedAt  DateTime @default(now()) @map("viewed_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("video_views")
+}
+
+// マイルストーン日付（全自動記録）
+model Milestone {
+  id            String        @id @default(cuid())
+  userId        String        @map("user_id")
+  milestoneType MilestoneType @map("milestone_type")
+  achievedAt    DateTime      @default(now()) @map("achieved_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, milestoneType])
+  @@map("milestones")
+}
+
+enum MilestoneType {
+  JOINED
+  SCRIPT_LEARNING_START
+  TEST_1_START
+  TEST_1_PASS
+  TEST_2_START
+  TEST_2_PASS
+  TEST_3_START
+  TEST_3_PASS
+  TEST_4_PASS
+  TEST_5_PASS
+  TEST_6_PASS
+  MEETING_ATTENDED
+  OBSERVATION_DONE
+  ASSIGNMENT_MEETING_DONE
+  PRACTICE_1_DONE
+  PRACTICE_2_DONE
+  FIRST_WORK
+}
+
+// 管理者専用記録（面談・見学・実践評価・メモ）
+model AdminRecord {
+  id          String          @id @default(cuid())
+  userId      String          @map("user_id")
+  recordType  AdminRecordType @map("record_type")
+  contentJson Json            @map("content_json")
+  createdBy   String          @map("created_by")
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("admin_records")
+}
+
+enum AdminRecordType {
+  ASSIGNMENT_MEETING // 配属面談記録
+  OBSERVATION        // 見学同行評価
+  PRACTICE_EVAL      // 実践評価
+  MEMO               // 管理者メモ
+  CUSTOM             // カスタム
+}
+
+// LINE会話の状態管理（ステートマシン）
+model ConversationState {
+  id             String    @id @default(cuid())
+  userId         String    @unique @map("user_id")
+  currentMode    String?   @map("current_mode")
+  contextJson    Json?     @map("context_json")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("conversation_states")
+}
