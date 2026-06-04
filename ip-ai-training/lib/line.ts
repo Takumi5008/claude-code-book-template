@@ -37,6 +37,10 @@ export async function pushText(userId: string, text: string) {
   });
 }
 
+export async function pushMessages(userId: string, messages: any[]) {
+  return lineClient.pushMessage({ to: userId, messages });
+}
+
 export function extractTextFromEvent(event: WebhookEvent): string | null {
   if (event.type === "message" && event.message.type === "text") {
     return event.message.text;

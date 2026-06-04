@@ -4,6 +4,7 @@ import { lineClient, replyMessages, replyText, extractTextFromEvent } from "@/li
 import { handleRegistration } from "./flows/registration";
 import { handlePractice } from "./flows/practice";
 import { handleTest, startTest } from "./flows/test";
+import { startQuiz, handleQuiz } from "./flows/quiz";
 import { handleProgress } from "./flows/progress";
 
 export async function handleMessage(event: WebhookEvent) {
@@ -31,6 +32,19 @@ export async function handleMessage(event: WebhookEvent) {
   });
 
   const currentMode = state?.currentMode ?? null;
+
+  // クイズ開始
+  if (text.startsWith("クイズ開始_")) {
+    const category = text.replace("クイズ開始_", "");
+    await startQuiz(event as any, user, category);
+    return;
+  }
+
+  // クイズ中は継続処理
+  if (currentMode?.startsWith("quiz_")) {
+    await handleQuiz(event, user, state!);
+    return;
+  }
 
   // テスト開始（テストN開始）
   const testStartMatch = text.match(/^テスト([1-6])開始$/);
@@ -215,5 +229,24 @@ async function handleVideoDelivery(event: WebhookEvent, category: string) {
     return;
   }
 
-  await replyText(event.replyToken, `📹 ${video.title}\n\n${video.url}`);
+  const hasQuiz = ["白紙", "同意書", "スクリプト"].includes(category);
+
+  if (hasQuiz) {
+    await replyMessages(event.replyToken, [
+      {
+        type: "text",
+        text: `📹 ${video.title}\n\n${video.url}\n\n動画を見たらクイズで理解を確認しましょう！`,
+        quickReply: {
+          items: [
+            {
+              type: "action",
+              action: { type: "message", label: "クイズに挑戦", text: `クイズ開始_${category}` },
+            },
+          ],
+        },
+      },
+    ]);
+  } else {
+    await replyText(event.replyToken, `📹 ${video.title}\n\n${video.url}`);
+  }
 }
