@@ -18,9 +18,12 @@ const CHECKLIST_LABELS: Record<number, string> = {
   12: "実践3", 13: "解除のやり方わかる",
 };
 
-export default async function UserDetailPage({ params }: { params: { id: string } }) {
+type Props = { params: Promise<{ id: string }> };
+
+export default async function UserDetailPage({ params }: Props) {
+  const { id } = await params;
   const user = await prisma.user.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       progress: true,
       testResults: { orderBy: { createdAt: "asc" } },
