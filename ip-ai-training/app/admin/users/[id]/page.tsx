@@ -77,7 +77,7 @@ export default async function UserDetailPage({ params }: Props) {
         <div>
           <h1 style={{ margin: 0 }}>{user.name}</h1>
           <p style={{ color: "#6b7280", margin: "4px 0 0" }}>
-            入社{days}日目　|　{user.team ?? "チーム未設定"}　|　{STEP_LABELS[step] ?? step}
+            研修開始から{days}日目　|　{user.team ?? "チーム未設定"}　|　{STEP_LABELS[step] ?? step}
           </p>
         </div>
         {user.progress?.estimatedFirstWorkAt && (

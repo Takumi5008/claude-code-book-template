@@ -46,7 +46,7 @@ export default async function AdminPage() {
       {/* サマリーカード */}
       <div style={{ display: "flex", gap: "1rem", marginBottom: "2rem", flexWrap: "wrap" }}>
         <StatCard label="在籍中の新人" value={`${totalUsers}人`} />
-        <StatCard label="平均入社日数" value={`${avgDays}日`} />
+        <StatCard label="平均研修日数" value={`${avgDays}日`} />
         <StatCard label="テスト3合格済" value={`${test3Passed}人`} />
       </div>
 
@@ -55,7 +55,7 @@ export default async function AdminPage() {
         <thead>
           <tr style={{ background: "#f5f5f5" }}>
             <th style={th}>名前</th>
-            <th style={th}>入社日数</th>
+            <th style={th}>研修日数</th>
             <th style={th}>現在地</th>
             <th style={th}>テスト合格</th>
             <th style={th}>直近スコア</th>
@@ -76,7 +76,7 @@ export default async function AdminPage() {
             return (
               <tr key={user.id} style={{ borderBottom: "1px solid #eee" }}>
                 <td style={td}><strong>{user.name}</strong></td>
-                <td style={td}>{days}日目</td>
+                <td style={td}>研修{days}日目</td>
                 <td style={td}>
                   <div style={{ fontSize: 12, marginBottom: 4 }}>{STEP_LABELS[step] ?? step}</div>
                   <div style={{ background: "#e5e7eb", borderRadius: 4, height: 6, width: 120 }}>

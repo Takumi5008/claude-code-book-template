@@ -45,7 +45,7 @@ export async function GET(req: NextRequest) {
 
       const message = [
         `おはようございます、${user.name}さん！🌅`,
-        `入社${joinedDays}日目です。`,
+        `研修開始から${joinedDays}日目です。`,
         "",
         `📍 現在地：${STEP_LABELS[currentStep] ?? currentStep}`,
         estimatedLine,

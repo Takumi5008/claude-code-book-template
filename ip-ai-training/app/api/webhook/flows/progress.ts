@@ -53,7 +53,6 @@ export async function handleProgress(event: WebhookEvent, user: User) {
   const currentStep = progress.currentStep;
   const currentIdx = STEP_ORDER.indexOf(currentStep);
 
-  // 入社日数
   const joinedDays = Math.floor(
     (Date.now() - user.joinedAt.getTime()) / (1000 * 60 * 60 * 24)
   );
@@ -80,7 +79,7 @@ export async function handleProgress(event: WebhookEvent, user: User) {
     .join("\n");
 
   const message = [
-    `📅 入社${joinedDays}日目`,
+    `📅 研修開始から${joinedDays}日目`,
     "",
     "【現在地】",
     stepProgress,
