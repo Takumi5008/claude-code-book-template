@@ -86,7 +86,7 @@ async function handleFollow(event: WebhookEvent & { type: "follow" }) {
       lineUserId,
       name,
       joinedAt: new Date(),
-      progress: { create: { currentStep: "ASSIGNED" } },
+      progress: { create: { currentStep: "SCRIPT_LEARNING" } },
       conversationState: { create: {} },
     },
   });
