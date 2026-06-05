@@ -5,6 +5,7 @@ import { handleRegistration } from "./flows/registration";
 import { handlePractice } from "./flows/practice";
 import { handleTest, startTest } from "./flows/test";
 import { startQuiz, handleQuiz } from "./flows/quiz";
+import { startMemory, handleMemory } from "./flows/memory";
 import { handleProgress } from "./flows/progress";
 
 export async function handleMessage(event: WebhookEvent) {
@@ -44,6 +45,19 @@ export async function handleMessage(event: WebhookEvent) {
   });
 
   const currentMode = state?.currentMode ?? null;
+
+  // 暗記練習開始
+  if (text.startsWith("暗記_")) {
+    const category = text.replace("暗記_", "") as "アウト返し" | "同意書後" | "後確";
+    await startMemory(event as any, user, category);
+    return;
+  }
+
+  // 暗記練習中
+  if (currentMode?.startsWith("memory_")) {
+    await handleMemory(event, user, state!);
+    return;
+  }
 
   // クイズ開始
   if (text.startsWith("クイズ開始_")) {
@@ -107,10 +121,13 @@ export async function handleMessage(event: WebhookEvent) {
     case "動画":
       await handleVideoMenu(event);
       break;
+    case "暗記":
+      await handleMemoryMenu(event);
+      break;
     default:
       await replyText(
         event.replyToken,
-        "メニューから選んでください：\n・練習\n・テスト\n・進捗確認\n・動画"
+        "メニューから選んでください：\n・練習\n・テスト\n・暗記\n・進捗確認\n・動画"
       );
   }
 }
@@ -190,14 +207,14 @@ async function startTestMenu(
   });
   const passedNums = new Set(passed.map((r) => r.testNumber));
 
-  const lines = [1, 2, 3, 4, 5, 6].map(
+  const lines = [1, 2, 3].map(
     (n) => `${passedNums.has(n) ? "✅" : "⬜"} テスト${n}`
   );
 
-  const nextTest = [1, 2, 3, 4, 5, 6].find((n) => !passedNums.has(n)) ?? null;
+  const nextTest = [1, 2, 3].find((n) => !passedNums.has(n)) ?? null;
   const footer = nextTest
     ? `\n次はテスト${nextTest}です。\nオンラインで実施後、管理者が合否を登録します。`
-    : "\n🎉 全テスト合格済みです！おめでとうございます！";
+    : "\n🎉 テスト1〜3合格済みです！おめでとうございます！";
 
   await replyText(event.replyToken, `📋 テスト合否状況\n\n${lines.join("\n")}${footer}`);
 }
@@ -214,6 +231,24 @@ async function handleVideoMenu(event: WebhookEvent) {
           { type: "action", action: { type: "message", label: "スクリプト練習動画", text: "動画_スクリプト" } },
           { type: "action", action: { type: "message", label: "白紙の書き方", text: "動画_白紙" } },
           { type: "action", action: { type: "message", label: "同意書の書き方", text: "動画_同意書" } },
+        ],
+      },
+    },
+  ]);
+}
+
+async function handleMemoryMenu(event: WebhookEvent) {
+  if (event.type !== "message" || !("replyToken" in event)) return;
+
+  await replyMessages(event.replyToken, [
+    {
+      type: "text",
+      text: "練習したい内容を選んでください：",
+      quickReply: {
+        items: [
+          { type: "action", action: { type: "message", label: "アウト返し", text: "暗記_アウト返し" } },
+          { type: "action", action: { type: "message", label: "同意書後〜退出", text: "暗記_同意書後" } },
+          { type: "action", action: { type: "message", label: "後確〜今後の流れ", text: "暗記_後確" } },
         ],
       },
     },

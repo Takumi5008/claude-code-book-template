@@ -30,7 +30,7 @@ export default function TestCards({ userId, passedTests, testHistory }: Props) {
 
   return (
     <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-      {[1, 2, 3, 4, 5, 6].map((n) => {
+      {[1, 2, 3].map((n) => {
         const isPassed = passed.has(n);
         const attempts = testHistory.filter((t) => t.testNumber === n);
         const best = attempts.length > 0 ? Math.max(...attempts.map((t) => t.score)) : null;
