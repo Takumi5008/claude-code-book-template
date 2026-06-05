@@ -11,6 +11,10 @@ import {
   CustomerPattern,
 } from "@/lib/claude";
 
+const PATTERN_LABELS: Record<string, string> = {
+  A: "NTT系", B: "JCOM", C: "ホームルーター", D: "アウト多め", E: "au/UQ",
+};
+
 type PracticeContext = {
   pattern: CustomerPattern;
   sessionId: string;
@@ -112,7 +116,7 @@ async function startPractice(
 
   await replyText(
     event.replyToken,
-    `練習開始！（パターン${pattern}）\n終了するには「練習終了」と送ってください。\n\n【お客様】\n${aiText}`
+    `練習開始！（${PATTERN_LABELS[pattern]}）\n終了するには「練習終了」と送ってください。\n\n【お客様】\n${aiText}`
   );
 }
 
