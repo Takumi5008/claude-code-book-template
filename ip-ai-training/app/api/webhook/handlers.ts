@@ -190,27 +190,16 @@ async function startTestMenu(
   });
   const passedNums = new Set(passed.map((r) => r.testNumber));
 
+  const lines = [1, 2, 3, 4, 5, 6].map(
+    (n) => `${passedNums.has(n) ? "✅" : "⬜"} テスト${n}`
+  );
+
   const nextTest = [1, 2, 3, 4, 5, 6].find((n) => !passedNums.has(n)) ?? null;
+  const footer = nextTest
+    ? `\n次はテスト${nextTest}です。\nオンラインで実施後、管理者が合否を登録します。`
+    : "\n🎉 全テスト合格済みです！おめでとうございます！";
 
-  if (!nextTest) {
-    await replyText(event.replyToken, "全テスト合格済みです！おめでとうございます🎉");
-    return;
-  }
-
-  await replyMessages(event.replyToken, [
-    {
-      type: "text",
-      text: `次のテストはテスト${nextTest}です。\n準備ができたら下のボタンで開始してください。`,
-      quickReply: {
-        items: [
-          {
-            type: "action",
-            action: { type: "message", label: `テスト${nextTest}開始`, text: `テスト${nextTest}開始` },
-          },
-        ],
-      },
-    },
-  ]);
+  await replyText(event.replyToken, `📋 テスト合否状況\n\n${lines.join("\n")}${footer}`);
 }
 
 async function handleVideoMenu(event: WebhookEvent) {

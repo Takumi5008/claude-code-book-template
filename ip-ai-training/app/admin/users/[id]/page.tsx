@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
+import TestCards from "./TestCards";
 
 export const dynamic = "force-dynamic";
 
@@ -91,26 +92,12 @@ export default async function UserDetailPage({ params }: Props) {
       </div>
 
       {/* テスト結果 */}
-      <Section title="テスト結果">
-        <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-          {[1, 2, 3, 4, 5, 6].map((n) => {
-            const passed = passedTests.has(n);
-            const attempts = user.testResults.filter((t) => t.testNumber === n);
-            const best = attempts.length > 0 ? Math.max(...attempts.map((t) => t.score)) : null;
-            return (
-              <div key={n} style={{
-                border: `2px solid ${passed ? "#16a34a" : "#e5e7eb"}`,
-                borderRadius: 8, padding: "0.75rem 1rem", minWidth: 100, textAlign: "center",
-                background: passed ? "#f0fdf4" : "#f9fafb",
-              }}>
-                <div style={{ fontSize: 13, color: "#6b7280" }}>テスト{n}</div>
-                <div style={{ fontSize: 22, margin: "4px 0" }}>{passed ? "✅" : "⬜"}</div>
-                {best !== null && <div style={{ fontSize: 12, color: "#374151" }}>最高{best}点</div>}
-                {attempts.length > 0 && <div style={{ fontSize: 11, color: "#9ca3af" }}>{attempts.length}回受験</div>}
-              </div>
-            );
-          })}
-        </div>
+      <Section title="テスト結果（オンライン実施・管理者が合否を登録）">
+        <TestCards
+          userId={user.id}
+          passedTests={[...passedTests]}
+          testHistory={user.testResults.map((t) => ({ testNumber: t.testNumber, score: t.score, attemptNumber: t.attemptNumber }))}
+        />
       </Section>
 
       {/* 練習スコア推移 */}
